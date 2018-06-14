@@ -1,9 +1,10 @@
 {
-  "name": "anonymmessengerbot",
+  "name": "AWBeta",
   "version": "1.0.0",
-  "description": "A facebook messenger but that allows you to talk with other random people (by still remaining anonymus)",
+  "description": "A bot that allows you to get the ETA on your AWBS",
   "main": "index.js",
   "scripts": {
+    "pretest": "eslint --ignore-path .gitignore .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./index.js"
   },
@@ -15,5 +16,13 @@
     "express": "^4.16.3",
     "fb-messenger": "^1.2.0",
     "node-wit": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.3.3",
+    "eslint": "^4.19.1",
+    "eslint-config-strongloop": "^2.1.0",
+    "eslint-plugin-typescript": "^0.12.0",
+    "typescript": "^2.9.2",
+    "typescript-eslint-parser": "^16.0.0"
   }
 }
