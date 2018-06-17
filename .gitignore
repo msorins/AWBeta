@@ -1,3 +1,7 @@
+#Exclude tsc generated files
+*.map
+*d.ts
+
 # Logs
 logs
 *.log

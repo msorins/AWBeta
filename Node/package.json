@@ -6,7 +6,7 @@
   "scripts": {
     "pretest": "eslint --ignore-path .gitignore .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./index.js"
+    "start": "tsc & node ./index.js"
   },
   "author": "",
   "license": "ISC",
@@ -15,7 +15,8 @@
     "bootbot": "^1.0.15",
     "express": "^4.16.3",
     "fb-messenger": "^1.2.0",
-    "node-wit": "^5.0.0"
+    "node-wit": "^5.0.0",
+    "request": "^2.87.0"
   },
   "devDependencies": {
     "@types/node": "^10.3.3",
