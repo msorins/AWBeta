@@ -27,13 +27,18 @@ var (
 	couriers = []string{"Dhl", "FanCourier", "Cargus"}
 )
 
+var resolverMap = map[string]func(string) solvers.ISolver {
+	"dhl" : AwbDhlSolverBuilder,
+}
 
 func main() {
 	//bytes := []byte(`{"_text":"jjjjjjkjk","entities":{"dhl":[{"suggested":true,"confidence":0.57024255304067,"value":"jjjjjjkjk","type":"value"}]},"msg_id":"0bCijamf5xGrLEfdH"}`)
 	//transformWitResponse(bytes)
 
-	solver := AwbDhlSolverBuilder("1627190725")
-	fmt.Println( solver.GetStatusesForAwb()[0] )
+	//solver := AwbDhlSolverBuilder("1627190725")
+	//fmt.Println( solver.GetStatusesForAwb()[0] )
+
+	messengerServer()
 }
 
 func messengerServer() {
@@ -70,16 +75,32 @@ func messengerServer() {
 		respWit, err := clientWit.Do(reqWit)
 		if respWit.StatusCode == http.StatusOK {
 			bodyBytes, _ := ioutil.ReadAll(respWit.Body)
-			transformWitResponse(bodyBytes)
+
+			// Transform byte array into an response
+			rw := transformWitResponse(bodyBytes)
+
+			// Get the handler needed to process
+			handler := processMessageType(rw)
+
+			// Call the handler and get the last package status
+			var packageStatuses []solvers.IPackageStatus
+			packageStatuses = handler.GetStatusesForAwb()
+
+			var packageStatus solvers.IPackageStatus
+			packageStatus = packageStatuses[ 0 ]
+
+			// Tell the user his status
+			r.Text(fmt.Sprintf("Successfully found the latest status of your DHL package"), messenger.ResponseType)
+			r.Text(fmt.Sprintf("%s %s", packageStatus.Status, packageStatus.DateTime), messenger.ResponseType)
+
 		}
-		fmt.Println(respWit)
 
 		p, err := client.ProfileByID(m.Sender.ID)
 		if err != nil {
 			fmt.Println("Something went wrong!", err)
 		}
+		fmt.Println(p)
 
-		r.Text(fmt.Sprintf("Hello, %v!", p.FirstName), messenger.ResponseType)
 	})
 
 
@@ -98,16 +119,15 @@ func messengerServer() {
 	log.Fatal(http.ListenAndServe(addr, client.Handler()))
 }
 
-func transformWitResponse(bodyBytes []byte) {
+func transformWitResponse(bodyBytes []byte) wit.WitResponseStructMap {
 	// Transform byte array ti WitResponseStructMap
 	var witResponse wit.WitResponseStructMap
 	json.Unmarshal(bodyBytes, &witResponse)
 
-	// Process the message based on the entities provided by the AI
-	processMessageType(witResponse)
+	return witResponse
 }
 
-func processMessageType(data wit.WitResponseStructMap) {
+func processMessageType(data wit.WitResponseStructMap) solvers.ISolver {
 	// Get the courier intent with the biggest probability
 	var bestEntityCourierName string
 	bestEntity := wit.WitEntity{}
@@ -123,9 +143,17 @@ func processMessageType(data wit.WitResponseStructMap) {
 	}
 
 	// Call the resolver for the given awb & courier firm
-	fmt.Println(bestEntity)
-	fmt.Println(bestEntityCourierName)
+	return resolverMap[bestEntityCourierName](bestEntity.Value)
 }
+
+
+
+
+
+
+
+
+
 
 
 
@@ -149,14 +177,14 @@ type AwbDhlCheckpoint struct {
 	Location string `json:"location"`
 }
 
-func AwbDhlSolverBuilder(awb string) awbDhlSolver {
+func AwbDhlSolverBuilder(awb string) solvers.ISolver{
 	awbSolver := awbDhlSolver{}
 	awbSolver.url = "https://www.dhl.ro/shipmentTracking?AWB="
 	awbSolver.awb = awb
 	return awbSolver
 }
 
-func (solver *awbDhlSolver) GetStatusesForAwb() []solvers.IPackageStatus {
+func (solver awbDhlSolver) GetStatusesForAwb() []solvers.IPackageStatus {
 	var urlToSend string
 	urlToSend = solver.url + url.QueryEscape(solver.awb)
 
@@ -186,6 +214,14 @@ func (solver *awbDhlSolver) GetStatusesForAwb() []solvers.IPackageStatus {
 	return solver.Statuses
 }
 
+func (awbsolver awbDhlSolver) GetStatuses() []solvers.IPackageStatus {
+	return awbsolver.Statuses
+}
+
+func (awbsolver awbDhlSolver) GetLastStatus() solvers.IPackageStatus{
+	return awbsolver.Statuses[ len(awbsolver.Statuses) - 1 ]
+}
+
 func transformAwbSolverRequest(bodyBytes []byte) AWbDhlResponse {
 	var awbResponse AWbDhlResponse
 	json.Unmarshal(bodyBytes, &awbResponse)
@@ -193,10 +229,3 @@ func transformAwbSolverRequest(bodyBytes []byte) AWbDhlResponse {
 	return awbResponse
 }
 
-func (awbsolver *awbDhlSolver) GetStatuses() []solvers.IPackageStatus {
-	return awbsolver.Statuses
-}
-
-func (awbsolver *awbDhlSolver) GetLastStatu() solvers.IPackageStatus{
-	return awbsolver.Statuses[ len(awbsolver.Statuses) - 1 ]
-}
