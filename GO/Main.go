@@ -11,8 +11,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"wit"
 )
-
 
 
 var (
@@ -26,43 +26,10 @@ var (
 	couriers = []string{"Dhl", "FanCourier", "Cargus"}
 )
 
-// V3
-type WitResponseStructMap struct {
-	Text string `json:"_text"`
-	MsgId string `json:"msg_id"`
-	Entities map[string][] WitEntity `json:"entities"`
-}
-
-// V2
-type withResponseMap map[string] interface{}
-
-// V1
-type WitResponseStruct struct {
-	Text string `json:"_text"`
-	MsgId string `json:"msg_id"`
-	Entities WitEntities `json:"entities"`
-}
-
-type WitEntities struct {
-	Dhl []WitEntity `json:"dhl,omitempty"`
-	FanCourier []WitEntity `json:"fancourier,omitempty"`
-	Cargus []WitEntity `json:"cargus,omitempty"`
-}
-
-type WitEntity struct {
-	Confidence float64 `json:"confidence"`
-	Value string `json:"value"`
-	Type string `json:"type"`
-}
-
 
 func main() {
-	/*
-	{"_text":"jjjjjjkjk","entities":{"dhl":[{"suggested":true,"confidence":0.57024255304067,"value":"jjjjjjkjk","type":"value"}]},"msg_id":"0bCijamf5xGrLEfdH"}
-	 */
-
-	 bytes := []byte(`{"_text":"jjjjjjkjk","entities":{"dhl":[{"suggested":true,"confidence":0.57024255304067,"value":"jjjjjjkjk","type":"value"}]},"msg_id":"0bCijamf5xGrLEfdH"}`)
-	 transformWitResponse(bytes)
+	bytes := []byte(`{"_text":"jjjjjjkjk","entities":{"dhl":[{"suggested":true,"confidence":0.57024255304067,"value":"jjjjjjkjk","type":"value"}]},"msg_id":"0bCijamf5xGrLEfdH"}`)
+	transformWitResponse(bytes)
 }
 
 func messengerServer() {
@@ -128,19 +95,7 @@ func messengerServer() {
 }
 
 func transformWitResponse(bodyBytes []byte) {
-	//witResponse := map[string]interface{} {
-	//	"_text": "",
-	//	"msg_id": "",
-	//	"entities":
-	//	map[string]interface{} {
-	//		"confidence": "",
-	//		"value": "",
-	//		"type": "",
-	//	},
-	//
-	//}
-
-	var witResponse WitResponseStructMap
+	var witResponse wit.WitResponseStructMap
 	json.Unmarshal(bodyBytes, &witResponse)
 
 	fmt.Println(witResponse)
@@ -149,10 +104,24 @@ func transformWitResponse(bodyBytes []byte) {
 }
 
 
-func processMessageType(data WitResponseStructMap) {
-	//len(data.Entities)
-	fmt.Println(data)
+func processMessageType(data wit.WitResponseStructMap) {
+	// Get the courier intent with the biggest probability
+	var bestEntityCourierName string
+	bestEntity := wit.WitEntity{}
+	bestEntity.Confidence = -1
 
+
+	for key, value := range data.Entities {
+		if value[0].Confidence > bestEntity.Confidence{
+			bestEntity = value[0]
+			bestEntityCourierName = key
+		}
+		fmt.Printf("%s   ->  v%s \n", key, value)
+	}
+
+	// Call the resolver for the given awb & courier firm
+	fmt.Println(bestEntity)
+	fmt.Println(bestEntityCourierName)
 
 	//v := reflect.ValueOf(data)
 	//
