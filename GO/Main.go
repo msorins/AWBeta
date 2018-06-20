@@ -12,6 +12,7 @@ import (
 	"log"
 	"os"
 	"wit"
+	"solvers"
 )
 
 
@@ -28,8 +29,11 @@ var (
 
 
 func main() {
-	bytes := []byte(`{"_text":"jjjjjjkjk","entities":{"dhl":[{"suggested":true,"confidence":0.57024255304067,"value":"jjjjjjkjk","type":"value"}]},"msg_id":"0bCijamf5xGrLEfdH"}`)
-	transformWitResponse(bytes)
+	//bytes := []byte(`{"_text":"jjjjjjkjk","entities":{"dhl":[{"suggested":true,"confidence":0.57024255304067,"value":"jjjjjjkjk","type":"value"}]},"msg_id":"0bCijamf5xGrLEfdH"}`)
+	//transformWitResponse(bytes)
+
+	solver := AwbDhlSolverBuilder("1627190725")
+	fmt.Println( solver.GetStatusesForAwb()[0] )
 }
 
 func messengerServer() {
@@ -95,14 +99,13 @@ func messengerServer() {
 }
 
 func transformWitResponse(bodyBytes []byte) {
+	// Transform byte array ti WitResponseStructMap
 	var witResponse wit.WitResponseStructMap
 	json.Unmarshal(bodyBytes, &witResponse)
 
-	fmt.Println(witResponse)
-
+	// Process the message based on the entities provided by the AI
 	processMessageType(witResponse)
 }
-
 
 func processMessageType(data wit.WitResponseStructMap) {
 	// Get the courier intent with the biggest probability
@@ -122,17 +125,78 @@ func processMessageType(data wit.WitResponseStructMap) {
 	// Call the resolver for the given awb & courier firm
 	fmt.Println(bestEntity)
 	fmt.Println(bestEntityCourierName)
-
-	//v := reflect.ValueOf(data)
-	//
-	//for i := 0; i < v.NumField(); i++ {
-	//	fmt.Printf("name: %+v, value: %+v (%T)\n",
-	//		v.Type().Field(i).Name, // Name attribute gives us the struct's value
-	//		v.Field(i).Elem(), 	// Elem() dereferences the pointer value
-	//		v.Field(i).Interface()) // Interface() provides memory address of the value
-	//}
-	//fmt.Println(a)
-	//
-	//data.Entitie
 }
 
+
+
+type awbDhlSolver struct {
+	awb string
+	url string
+	Statuses []solvers.IPackageStatus
+}
+
+type AWbDhlResponse struct {
+	Results []AwbDhlCheckpointHolder `json:"results"`
+}
+type AwbDhlCheckpointHolder struct {
+	Checkpoints []AwbDhlCheckpoint `json:"checkpoints"`
+}
+
+type AwbDhlCheckpoint struct {
+	Status string `json:"description"`
+	Date string `json:"date"`
+	Time string `json:"time"`
+	Location string `json:"location"`
+}
+
+func AwbDhlSolverBuilder(awb string) awbDhlSolver {
+	awbSolver := awbDhlSolver{}
+	awbSolver.url = "https://www.dhl.ro/shipmentTracking?AWB="
+	awbSolver.awb = awb
+	return awbSolver
+}
+
+func (solver *awbDhlSolver) GetStatusesForAwb() []solvers.IPackageStatus {
+	var urlToSend string
+	urlToSend = solver.url + url.QueryEscape(solver.awb)
+
+	respAwb, _ := http.Get(urlToSend)
+
+	// Get the response
+	if respAwb.StatusCode == http.StatusOK {
+		bodyBytes, _ := ioutil.ReadAll(respAwb.Body)
+
+		// Transform it to a struct
+		rs := transformAwbSolverRequest(bodyBytes)
+
+		// Assign it to class member
+		solver.Statuses = []solvers.IPackageStatus{}
+		for _, value := range  rs.Results[0].Checkpoints {
+			var crtPackageStatus solvers.IPackageStatus
+			crtPackageStatus.DateTime = value.Date + value.Time
+			crtPackageStatus.Location = value.Location
+			crtPackageStatus.Status = value.Status
+
+			solver.Statuses = append(solver.Statuses, crtPackageStatus)
+		}
+	} else {
+		fmt.Println("Error in request")
+	}
+
+	return solver.Statuses
+}
+
+func transformAwbSolverRequest(bodyBytes []byte) AWbDhlResponse {
+	var awbResponse AWbDhlResponse
+	json.Unmarshal(bodyBytes, &awbResponse)
+
+	return awbResponse
+}
+
+func (awbsolver *awbDhlSolver) GetStatuses() []solvers.IPackageStatus {
+	return awbsolver.Statuses
+}
+
+func (awbsolver *awbDhlSolver) GetLastStatu() solvers.IPackageStatus{
+	return awbsolver.Statuses[ len(awbsolver.Statuses) - 1 ]
+}
