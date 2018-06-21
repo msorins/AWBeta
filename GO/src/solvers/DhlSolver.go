@@ -12,7 +12,7 @@ import (
 type awbDhlSolver struct {
 	awb string
 	url string
-	Statuses []IPackageStatus
+	Statuses []AwbDhlCheckpoint
 }
 
 type AWbDhlResponse struct {
@@ -34,10 +34,10 @@ func AwbDhlSolverBuilder(awb string) ISolver{
 	awbSolver := awbDhlSolver{}
 	awbSolver.url = "https://www.dhl.ro/shipmentTracking?AWB="
 	awbSolver.awb = awb
-	return awbSolver
+	return &awbSolver
 }
 
-func (solver awbDhlSolver) GetStatusesForAwb() []IPackageStatus {
+func (solver *awbDhlSolver) updateStatuses() {
 	var urlToSend string
 	urlToSend = solver.url + url.QueryEscape(solver.awb)
 
@@ -51,15 +51,8 @@ func (solver awbDhlSolver) GetStatusesForAwb() []IPackageStatus {
 		rs := transformDhlSolverRequest(bodyBytes)
 
 		// Assign it to class member
-		solver.Statuses = []IPackageStatus{}
 		for _, value := range  rs.Results[0].Checkpoints {
-			var crtPackageStatus IPackageStatus
-			crtPackageStatus.Index = value.Index
-			crtPackageStatus.DateTime = value.Date + value.Time
-			crtPackageStatus.Location = value.Location
-			crtPackageStatus.Status = value.Status
-
-			solver.Statuses = append(solver.Statuses, crtPackageStatus)
+			solver.Statuses = append(solver.Statuses, value)
 		}
 
 		sort.Slice(solver.Statuses, func(i, j int) bool {
@@ -69,17 +62,18 @@ func (solver awbDhlSolver) GetStatusesForAwb() []IPackageStatus {
 		fmt.Println("Error in request")
 	}
 
-	return solver.Statuses
 }
 
-func (awbsolver awbDhlSolver) GetStatuses() []string {
-	updatedStatuses := awbsolver.GetStatusesForAwb()
+func (awbsolver *awbDhlSolver) GetStatuses() []string {
+	awbsolver.updateStatuses()
+	updatedStatuses := awbsolver.Statuses
+
 	results := []string{}
 
 	if len(updatedStatuses) >= 1 {
 		results = append(results, "These are all the steps taken by your DHL package")
 		for _, status := range updatedStatuses {
-			results = append(results, fmt.Sprintf("%s %s", status.Status, status.DateTime))
+			results = append(results, fmt.Sprintf("%s %s %s", status.Status, status.Date, status.Time))
 		}
 	} else {
 		results = append(results, "Could not found any records for your AWB")
@@ -89,13 +83,15 @@ func (awbsolver awbDhlSolver) GetStatuses() []string {
 	return results
 }
 
-func (awbsolver awbDhlSolver) GetLastStatus() []string{
-	updatedStatuses := awbsolver.GetStatusesForAwb()
+func (awbsolver *awbDhlSolver) GetLastStatus() []string{
+	awbsolver.updateStatuses()
+	updatedStatuses := awbsolver.Statuses
+
 	results := []string{}
 
 	if len(updatedStatuses) >= 1 {
 		results = append(results, "Successfully found the latest status of your DHL package")
-		results = append(results, fmt.Sprintf("%s, %s", updatedStatuses[0].Status, updatedStatuses[0].DateTime))
+		results = append(results, fmt.Sprintf("%s, %s %s", updatedStatuses[0].Status, updatedStatuses[0].Date, updatedStatuses[0].Time))
 	} else {
 		results = append(results, "Could not found any records for your AWB")
 	}

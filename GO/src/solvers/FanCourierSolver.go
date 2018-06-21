@@ -14,42 +14,28 @@ import (
 type awbFanCourierSolver struct {
 	awb string
 	url string
-	Statuses []IPackageStatus
+	Statuses []AWbFanCourierCheckpoint
 }
 
 type AWbFanCourierResponse struct {
 	Entities map[string] AWbFanCourierCheckpoint `json:"1"`
 }
 
-//type Aux struct {
-//	FirstEntity  `json:"0"`
-//}
-//type AWbFanCourierCheckpoints struct {
-//	Entities map[string][] AWbFanCourierCheckpoint
-//}
 
 type AWbFanCourierCheckpoint struct {
 		Index int `json:"nstex"`
 		Status string `json:"mstex"`
 		Date string `json:"dstex"`
 }
-//type AWbFanCourierResponse struct {
-//	Results []AwbFanCourierCheckpoint `json:"1"`
-//}
-//
-//type AwbFanCourierCheckpoint struct {
-//	Status string `json:"mstex"`
-//	Date string `json:"dstex"`
-//}
 
 func AwbFanCourierSolverBuilder(awb string) ISolver{
 	awbSolver := awbFanCourierSolver{}
 	awbSolver.url = "https://www.fancourier.ro/wp-content/themes/fancourier/webservice.php"
 	awbSolver.awb = awb
-	return awbSolver
+	return &awbSolver
 }
 
-func (solver awbFanCourierSolver) GetStatusesForAwb() []IPackageStatus {
+func (solver *awbFanCourierSolver) updateStatuses()  {
 	var urlToSend string
 	urlToSend = solver.url
 
@@ -76,17 +62,12 @@ func (solver awbFanCourierSolver) GetStatusesForAwb() []IPackageStatus {
 		}
 
 		// Assign it to class member
-		lst := []IPackageStatus{}
+		lst := []AWbFanCourierCheckpoint{}
 
 		for _, value := range  rs.Entities {
 			if value.Index != 0 {
-				var crtPackage IPackageStatus
-				crtPackage.Index = value.Index
-				crtPackage.Status = value.Status[: len(value.Status) - 9]
-				crtPackage.DateTime = value.Date
-				crtPackage.Location = ""
-
-				lst = append(lst, crtPackage)
+				value.Status = value.Status[: len(value.Status) - 9]
+				lst = append(lst, value)
 			}
 
 		}
@@ -101,37 +82,38 @@ func (solver awbFanCourierSolver) GetStatusesForAwb() []IPackageStatus {
 		fmt.Println("Error in request")
 	}
 
-	return solver.Statuses
 }
 
-func (awbsolver awbFanCourierSolver) GetStatuses() []string {
-	updatedStatuses := awbsolver.GetStatusesForAwb()
+func (awbsolver *awbFanCourierSolver) GetStatuses() []string {
+	awbsolver.updateStatuses()
+	updatedStatuses := awbsolver.Statuses
+
 	results := []string{}
 
 	if len(updatedStatuses) >= 1 {
 		results = append(results, "These are all the steps taken by your FanCourier package")
 		for _, status := range updatedStatuses {
-			results = append(results, fmt.Sprintf("%s, %s", status.Status, status.DateTime))
+			results = append(results, fmt.Sprintf("%s, %s", status.Status, status.Date))
 		}
 	} else {
 		results = append(results, "Could not found any records for your AWB")
 	}
 
-
 	return results
 }
 
-func (awbsolver awbFanCourierSolver) GetLastStatus() []string {
-	updatedStatuses := awbsolver.GetStatusesForAwb()
+func (awbsolver *awbFanCourierSolver) GetLastStatus() []string {
+	awbsolver.updateStatuses()
+	updatedStatuses := awbsolver.Statuses
+
 	results := []string{}
 
 	if len(updatedStatuses) >= 1 {
 		results = append(results, "Successfully found the latest status of your FanCourier package")
-		results = append(results, fmt.Sprintf("%s, %s", updatedStatuses[0].Status, updatedStatuses[0].DateTime))
+		results = append(results, fmt.Sprintf("%s, %s", updatedStatuses[0].Status, updatedStatuses[0].Date))
 	} else {
 		results = append(results, "Could not found any records for your AWB")
 	}
-
 
 	return results
 }

@@ -1,7 +1,7 @@
 package solvers
 
 type ISolver interface {
-	GetStatusesForAwb() []IPackageStatus
+	updateStatuses()
 
 	GetStatuses() []string
 	GetLastStatus() [] string
