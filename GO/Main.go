@@ -8,11 +8,11 @@ import (
 	"time"
 	"net/url"
 	"net/http"
-	"io/ioutil"
 	"log"
 	"os"
 	"wit"
 	"solvers"
+	"io/ioutil"
 )
 
 
@@ -29,6 +29,7 @@ var (
 
 var resolverMap = map[string]func(string) solvers.ISolver {
 	"dhl" : solvers.AwbDhlSolverBuilder,
+	"fanCourier": solvers.AwbFanCourierSolverBuilder,
 }
 
 func main() {
@@ -37,6 +38,9 @@ func main() {
 
 	//solver := AwbDhlSolverBuilder("1627190725")
 	//fmt.Println( solver.GetStatusesForAwb()[0] )
+
+	//bytes := []byte(`{"_text":"Hi, what's the status for 2032810250356","entities":{"fanCourier":[{"confidence":0.90277319054148,"value":"2032810250356","type":"value"}]},"msg_id":"0JuF009t8Ou1oTd5O"}`)
+	//witToRes(bytes)
 
 	messengerServer()
 }
@@ -77,22 +81,13 @@ func messengerServer() {
 			bodyBytes, _ := ioutil.ReadAll(respWit.Body)
 
 			// Transform byte array into an response
-			rw := transformWitResponse(bodyBytes)
+			var sentToUSer []string
+			sentToUSer = witToRes(bodyBytes)
 
-			// Get the handler needed to process
-			handler := processMessageType(rw)
-
-			// Call the handler and get the last package status
-			var packageStatuses []solvers.IPackageStatus
-			packageStatuses = handler.GetStatusesForAwb()
-
-			var packageStatus solvers.IPackageStatus
-			packageStatus = packageStatuses[ 0 ]
-
-			// Tell the user his status
-			r.Text(fmt.Sprintf("Successfully found the latest status of your DHL package"), messenger.ResponseType)
-			r.Text(fmt.Sprintf("%s %s", packageStatus.Status, packageStatus.DateTime), messenger.ResponseType)
-
+			// Send the responses to the  user
+			for _, str := range sentToUSer {
+				r.Text(str, messenger.ResponseType)
+			}
 		}
 
 		p, err := client.ProfileByID(m.Sender.ID)
@@ -100,7 +95,6 @@ func messengerServer() {
 			fmt.Println("Something went wrong!", err)
 		}
 		fmt.Println(p)
-
 	})
 
 
@@ -117,6 +111,28 @@ func messengerServer() {
 	addr := fmt.Sprintf("%s:%d", *host, *port)
 	log.Println("Serving messenger bot on", addr)
 	log.Fatal(http.ListenAndServe(addr, client.Handler()))
+}
+
+func witToRes(bodyBytes []byte) []string {
+	// Transform byte array into an response
+	rw := transformWitResponse(bodyBytes)
+
+	// Get the handler needed to process
+	handler := processMessageType(rw)
+
+	// Call the handler and get the last package status
+	var packageStatuses []solvers.IPackageStatus
+	packageStatuses = handler.GetStatusesForAwb()
+
+	var packageStatus solvers.IPackageStatus
+	packageStatus = packageStatuses[ 0 ]
+
+	// Gather the result strings
+	var results []string
+	results = append(results, "Successfully found the latest status of your DHL package")
+	results = append(results, fmt.Sprintf("%s %s", packageStatus.Status, packageStatus.DateTime))
+
+	return results
 }
 
 func transformWitResponse(bodyBytes []byte) wit.WitResponseStructMap {
