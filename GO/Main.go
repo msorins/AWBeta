@@ -121,18 +121,7 @@ func witToRes(bodyBytes []byte) []string {
 	handler := processMessageType(rw)
 
 	// Call the handler and get the last package status
-	var packageStatuses []solvers.IPackageStatus
-	packageStatuses = handler.GetStatusesForAwb()
-
-	var packageStatus solvers.IPackageStatus
-	packageStatus = packageStatuses[ 0 ]
-
-	// Gather the result strings
-	var results []string
-	results = append(results, "Successfully found the latest status of your DHL package")
-	results = append(results, fmt.Sprintf("%s %s", packageStatus.Status, packageStatus.DateTime))
-
-	return results
+	return handler.GetLastStatus()
 }
 
 func transformWitResponse(bodyBytes []byte) wit.WitResponseStructMap {

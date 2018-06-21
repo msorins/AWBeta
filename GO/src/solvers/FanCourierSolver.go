@@ -76,7 +76,6 @@ func (solver awbFanCourierSolver) GetStatusesForAwb() []IPackageStatus {
 		}
 
 		// Assign it to class member
-		solver.Statuses = []IPackageStatus{}
 		lst := []IPackageStatus{}
 
 		for _, value := range  rs.Entities {
@@ -105,12 +104,36 @@ func (solver awbFanCourierSolver) GetStatusesForAwb() []IPackageStatus {
 	return solver.Statuses
 }
 
-func (awbsolver awbFanCourierSolver) GetStatuses() []IPackageStatus {
-	return awbsolver.Statuses
+func (awbsolver awbFanCourierSolver) GetStatuses() []string {
+	updatedStatuses := awbsolver.GetStatusesForAwb()
+	results := []string{}
+
+	if len(updatedStatuses) >= 1 {
+		results = append(results, "These are all the steps taken by your FanCourier package")
+		for _, status := range updatedStatuses {
+			results = append(results, fmt.Sprintf("%s, %s", status.Status, status.DateTime))
+		}
+	} else {
+		results = append(results, "Could not found any records for your AWB")
+	}
+
+
+	return results
 }
 
-func (awbsolver awbFanCourierSolver) GetLastStatus() IPackageStatus{
-	return awbsolver.Statuses[ len(awbsolver.Statuses) - 1 ]
+func (awbsolver awbFanCourierSolver) GetLastStatus() []string {
+	updatedStatuses := awbsolver.GetStatusesForAwb()
+	results := []string{}
+
+	if len(updatedStatuses) >= 1 {
+		results = append(results, "Successfully found the latest status of your FanCourier package")
+		results = append(results, fmt.Sprintf("%s, %s", updatedStatuses[0].Status, updatedStatuses[0].DateTime))
+	} else {
+		results = append(results, "Could not found any records for your AWB")
+	}
+
+
+	return results
 }
 
 func transformFanCourierSolverRequest(bodyBytes []byte) AWbFanCourierResponse {

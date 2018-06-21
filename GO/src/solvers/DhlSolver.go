@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"fmt"
 	"encoding/json"
+	"sort"
 )
 
 type awbDhlSolver struct {
@@ -22,6 +23,7 @@ type AwbDhlCheckpointHolder struct {
 }
 
 type AwbDhlCheckpoint struct {
+	Index int `json:"counter"`
 	Status string `json:"description"`
 	Date string `json:"date"`
 	Time string `json:"time"`
@@ -52,12 +54,17 @@ func (solver awbDhlSolver) GetStatusesForAwb() []IPackageStatus {
 		solver.Statuses = []IPackageStatus{}
 		for _, value := range  rs.Results[0].Checkpoints {
 			var crtPackageStatus IPackageStatus
+			crtPackageStatus.Index = value.Index
 			crtPackageStatus.DateTime = value.Date + value.Time
 			crtPackageStatus.Location = value.Location
 			crtPackageStatus.Status = value.Status
 
 			solver.Statuses = append(solver.Statuses, crtPackageStatus)
 		}
+
+		sort.Slice(solver.Statuses, func(i, j int) bool {
+			return solver.Statuses[i].Index > solver.Statuses[j].Index
+		})
 	} else {
 		fmt.Println("Error in request")
 	}
@@ -65,12 +72,36 @@ func (solver awbDhlSolver) GetStatusesForAwb() []IPackageStatus {
 	return solver.Statuses
 }
 
-func (awbsolver awbDhlSolver) GetStatuses() []IPackageStatus {
-	return awbsolver.Statuses
+func (awbsolver awbDhlSolver) GetStatuses() []string {
+	updatedStatuses := awbsolver.GetStatusesForAwb()
+	results := []string{}
+
+	if len(updatedStatuses) >= 1 {
+		results = append(results, "These are all the steps taken by your DHL package")
+		for _, status := range updatedStatuses {
+			results = append(results, fmt.Sprintf("%s %s", status.Status, status.DateTime))
+		}
+	} else {
+		results = append(results, "Could not found any records for your AWB")
+	}
+
+
+	return results
 }
 
-func (awbsolver awbDhlSolver) GetLastStatus() IPackageStatus{
-	return awbsolver.Statuses[ len(awbsolver.Statuses) - 1 ]
+func (awbsolver awbDhlSolver) GetLastStatus() []string{
+	updatedStatuses := awbsolver.GetStatusesForAwb()
+	results := []string{}
+
+	if len(updatedStatuses) >= 1 {
+		results = append(results, "Successfully found the latest status of your DHL package")
+		results = append(results, fmt.Sprintf("%s, %s", updatedStatuses[0].Status, updatedStatuses[0].DateTime))
+	} else {
+		results = append(results, "Could not found any records for your AWB")
+	}
+
+
+	return results
 }
 
 func transformDhlSolverRequest(bodyBytes []byte) AWbDhlResponse {
