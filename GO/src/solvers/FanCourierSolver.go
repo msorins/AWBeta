@@ -9,6 +9,7 @@ import (
 	"strings"
 	"strconv"
 	"sort"
+	"wit"
 )
 
 type awbFanCourierSolver struct {
@@ -28,7 +29,7 @@ type AWbFanCourierCheckpoint struct {
 		Date string `json:"dstex"`
 }
 
-func AwbFanCourierSolverBuilder(awb string) ISolver{
+func AwbFanCourierSolverBuilder(awb string, entities map[string][]wit.WitEntity) ISolver{
 	awbSolver := awbFanCourierSolver{}
 	awbSolver.url = "https://www.fancourier.ro/wp-content/themes/fancourier/webservice.php"
 	awbSolver.awb = awb

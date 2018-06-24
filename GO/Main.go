@@ -27,9 +27,10 @@ var (
 	couriers = []string{"Dhl", "FanCourier", "Cargus"}
 )
 
-var resolverMap = map[string]func(string) solvers.ISolver {
+var resolverMap = map[string]func(string, map[string][]wit.WitEntity) solvers.ISolver {
 	"dhl" : solvers.AwbDhlSolverBuilder,
 	"fanCourier": solvers.AwbFanCourierSolverBuilder,
+	"unknown": solvers.UnknownFanCourierSolverBuilder,
 }
 
 func main() {
@@ -87,6 +88,7 @@ func messengerServer() {
 			// Send the responses to the  user
 			for _, str := range sentToUSer {
 				r.Text(str, messenger.ResponseType)
+
 			}
 		}
 
@@ -135,18 +137,23 @@ func transformWitResponse(bodyBytes []byte) wit.WitResponseStructMap {
 func processMessageType(data wit.WitResponseStructMap) solvers.ISolver {
 	// Get the courier intent with the biggest probability
 	var bestEntityCourierName string
+	bestEntityCourierName = "unknown"
 	bestEntity := wit.WitEntity{}
 	bestEntity.Confidence = -1
 
 
 	for key, value := range data.Entities {
 		if value[0].Confidence > bestEntity.Confidence{
-			bestEntity = value[0]
-			bestEntityCourierName = key
+			_, ok := resolverMap[ key ]
+			if ok == true {
+				bestEntity = value[0]
+				bestEntityCourierName = key
+			}
+
 		}
 		fmt.Printf("%s   ->  v%s \n", key, value)
 	}
 
 	// Call the resolver for the given awb & courier firm
-	return resolverMap[bestEntityCourierName](bestEntity.Value)
+	return resolverMap[bestEntityCourierName](bestEntity.Value, data.Entities)
 }

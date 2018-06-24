@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"encoding/json"
 	"sort"
+	"wit"
 )
 
 type awbDhlSolver struct {
@@ -30,7 +31,7 @@ type AwbDhlCheckpoint struct {
 	Location string `json:"location"`
 }
 
-func AwbDhlSolverBuilder(awb string) ISolver{
+func AwbDhlSolverBuilder(awb string, entities map[string][]wit.WitEntity) ISolver{
 	awbSolver := awbDhlSolver{}
 	awbSolver.url = "https://www.dhl.ro/shipmentTracking?AWB="
 	awbSolver.awb = awb
@@ -51,6 +52,9 @@ func (solver *awbDhlSolver) updateStatuses() {
 		rs := transformDhlSolverRequest(bodyBytes)
 
 		// Assign it to class member
+		if len(rs.Results) == 0 {
+			return
+		}
 		for _, value := range  rs.Results[0].Checkpoints {
 			solver.Statuses = append(solver.Statuses, value)
 		}
@@ -59,7 +63,7 @@ func (solver *awbDhlSolver) updateStatuses() {
 			return solver.Statuses[i].Index > solver.Statuses[j].Index
 		})
 	} else {
-		fmt.Println("Error in request")
+		fmt.Println("Error in r1 equest")
 	}
 
 }
