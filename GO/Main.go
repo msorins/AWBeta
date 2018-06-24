@@ -43,7 +43,13 @@ func main() {
 	//bytes := []byte(`{"_text":"Hi, what's the status for 2032810250356","entities":{"fanCourier":[{"confidence":0.90277319054148,"value":"2032810250356","type":"value"}]},"msg_id":"0JuF009t8Ou1oTd5O"}`)
 	//witToRes(bytes)
 
-	messengerServer()
+	// Real server
+	//messengerServer()
+
+	// Mock messages
+	messageMock := messenger.Message{}
+	messageMock.Text = "Hi, what's the status for 2032810250356"
+	fmt.Println( messageHandleToRes(messageMock) )
 }
 
 func messengerServer() {
@@ -71,32 +77,13 @@ func messengerServer() {
 	client.HandleMessage(func(m messenger.Message, r *messenger.Response) {
 		fmt.Printf("%v (Sent, %v)\n", m.Text, m.Time.Format(time.UnixDate))
 
-		var urlToSend string
-		urlToSend = "https://api.wit.ai/message?v=20180617&q=" + url.QueryEscape(m.Text)
+		// Get the results for the message received
+		results := messageHandleToRes(m)
 
-		clientWit := &http.Client{}
-		reqWit, _ := http.NewRequest("GET", urlToSend, nil)
-		reqWit.Header.Add("Authorization", "Bearer XSNNOAK5JCAEYUULJ6V6YJ6G45VSJ6TV")
-		respWit, err := clientWit.Do(reqWit)
-		if respWit.StatusCode == http.StatusOK {
-			bodyBytes, _ := ioutil.ReadAll(respWit.Body)
-
-			// Transform byte array into an response
-			var sentToUSer []string
-			sentToUSer = witToRes(bodyBytes)
-
-			// Send the responses to the  user
-			for _, str := range sentToUSer {
-				r.Text(str, messenger.ResponseType)
-
-			}
+		// Send them to the user
+		for _, str := range results {
+			r.Text(str, messenger.ResponseType)
 		}
-
-		p, err := client.ProfileByID(m.Sender.ID)
-		if err != nil {
-			fmt.Println("Something went wrong!", err)
-		}
-		fmt.Println(p)
 	})
 
 
@@ -113,6 +100,31 @@ func messengerServer() {
 	addr := fmt.Sprintf("%s:%d", *host, *port)
 	log.Println("Serving messenger bot on", addr)
 	log.Fatal(http.ListenAndServe(addr, client.Handler()))
+}
+
+func messageHandleToRes(message messenger.Message) []string {
+	// Get the message text & form WIT request
+	var urlToSend string
+	urlToSend = "https://api.wit.ai/message?v=20180617&q=" + url.QueryEscape(message.Text)
+
+	clientWit := &http.Client{}
+	reqWit, _ := http.NewRequest("GET", urlToSend, nil)
+	reqWit.Header.Add("Authorization", "Bearer XSNNOAK5JCAEYUULJ6V6YJ6G45VSJ6TV")
+	respWit, _ := clientWit.Do(reqWit)
+
+	// Get wit response, if it is ok send it further to be parsed & get a result
+	if respWit.StatusCode == http.StatusOK {
+		bodyBytes, _ := ioutil.ReadAll(respWit.Body)
+
+		// Transform byte array into an response
+		var sentToUSer []string
+		sentToUSer = witToRes(bodyBytes)
+
+		// Return the result ( a list of strings )
+		return sentToUSer
+	}
+
+	return []string{}
 }
 
 func witToRes(bodyBytes []byte) []string {
