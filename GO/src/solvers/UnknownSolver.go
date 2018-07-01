@@ -1,6 +1,8 @@
 package solvers
 
-import "wit"
+import (
+	"wit"
+)
 
 type unknownCourierSolver struct {
 	awb string
@@ -22,14 +24,12 @@ func (solver *unknownCourierSolver) updateStatuses()  {
 
 func (awbsolver *unknownCourierSolver) GetStatuses() []string {
 	results := []string{}
-
 	results = append(results, "Could not found and AWB and link it with a courier company")
 	return results
 }
 
 func (awbsolver *unknownCourierSolver) GetLastStatus() []string {
 	results := []string{}
-
 	results = append(results, "Could not found and AWB and link it with a courier company")
 	return results
 }

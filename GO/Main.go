@@ -13,6 +13,7 @@ import (
 	"wit"
 	"solvers"
 	"io/ioutil"
+	"state"
 )
 
 
@@ -27,32 +28,26 @@ var (
 	couriers = []string{"Dhl", "FanCourier", "Cargus"}
 )
 
-var resolverMap = map[string]func(string, map[string][]wit.WitEntity) solvers.ISolver {
+var resolverMap = map[string]func(string,  map[string][]wit.WitEntity) solvers.ISolver {
 	"dhl" : solvers.AwbDhlSolverBuilder,
 	"fanCourier": solvers.AwbFanCourierSolverBuilder,
 	"unknown": solvers.UnknownFanCourierSolverBuilder,
 }
 
 func main() {
-	//bytes := []byte(`{"_text":"jjjjjjkjk","entities":{"dhl":[{"suggested":true,"confidence":0.57024255304067,"value":"jjjjjjkjk","type":"value"}]},"msg_id":"0bCijamf5xGrLEfdH"}`)
-	//transformWitResponse(bytes)
-
-	//solver := AwbDhlSolverBuilder("1627190725")
-	//fmt.Println( solver.GetStatusesForAwb()[0] )
-
-	//bytes := []byte(`{"_text":"Hi, what's the status for 2032810250356","entities":{"fanCourier":[{"confidence":0.90277319054148,"value":"2032810250356","type":"value"}]},"msg_id":"0JuF009t8Ou1oTd5O"}`)
-	//witToRes(bytes)
-
 	// Real server
 	//messengerServer()
 
 	// Mock messages
+	st := state.StateManagerBuilder()
 	messageMock := messenger.Message{}
+	messageMock.Sender.ID = 123456
 	messageMock.Text = "Hi, what's the status for 2032810250356"
-	fmt.Println( messageHandleToRes(messageMock) )
+
+	fmt.Println( messageHandleToRes(st, messageMock) )
 }
 
-func messengerServer() {
+func messengerServer(stateManager state.StateManager) {
 
 	flag.Parse()
 
@@ -78,7 +73,7 @@ func messengerServer() {
 		fmt.Printf("%v (Sent, %v)\n", m.Text, m.Time.Format(time.UnixDate))
 
 		// Get the results for the message received
-		results := messageHandleToRes(m)
+		results := messageHandleToRes(stateManager, m)
 
 		// Send them to the user
 		for _, str := range results {
@@ -102,7 +97,7 @@ func messengerServer() {
 	log.Fatal(http.ListenAndServe(addr, client.Handler()))
 }
 
-func messageHandleToRes(message messenger.Message) []string {
+func messageHandleToRes(stateManager state.StateManager, message messenger.Message) []string {
 	// Get the message text & form WIT request
 	var urlToSend string
 	urlToSend = "https://api.wit.ai/message?v=20180617&q=" + url.QueryEscape(message.Text)
@@ -118,7 +113,7 @@ func messageHandleToRes(message messenger.Message) []string {
 
 		// Transform byte array into an response
 		var sentToUSer []string
-		sentToUSer = witToRes(bodyBytes)
+		sentToUSer = witToRes(stateManager, fmt.Sprintf("%v", message.Sender.ID), bodyBytes)
 
 		// Return the result ( a list of strings )
 		return sentToUSer
@@ -127,15 +122,19 @@ func messageHandleToRes(message messenger.Message) []string {
 	return []string{}
 }
 
-func witToRes(bodyBytes []byte) []string {
+func witToRes(stateManager state.StateManager, userId string, bodyBytes []byte) []string {
 	// Transform byte array into an response
 	rw := transformWitResponse(bodyBytes)
 
 	// Get the handler needed to process
 	handler := processMessageType(rw)
+	res := handler.GetLastStatus()
 
-	// Call the handler and get the last package status
-	return handler.GetLastStatus()
+	// Update the stateManager
+	stateManager.SetState(userId, handler, "ok")
+
+	// Return the response
+	return res
 }
 
 func transformWitResponse(bodyBytes []byte) wit.WitResponseStructMap {

@@ -2,12 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="981cd0ae-8a6f-4d13-87d7-3d286754acf7" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/solvers/UnknownSolver.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/state/StateManager.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Main.go" beforeDir="false" afterPath="$PROJECT_DIR$/Main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/darwin_amd64/solvers.a" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/darwin_amd64/solvers.a" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/solvers/DhlSolver.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/solvers/DhlSolver.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/solvers/FanCourierSolver.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/solvers/FanCourierSolver.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/solvers/UnknownSolver.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/solvers/UnknownSolver.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,65 +20,23 @@
       <file leaf-file-name="Main.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="125" selection-start-line="125" selection-end-line="125" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UnknownSolver.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/solvers/UnknownSolver.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="72" lean-forward="true" selection-start-line="11" selection-start-column="72" selection-end-line="11" selection-end-column="72" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="readme.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/readme.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="7" lean-forward="true" selection-start-column="7" selection-end-column="42" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FanCourierSolver.go" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/solvers/FanCourierSolver.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-294">
-              <caret line="31" column="67" lean-forward="true" selection-start-line="31" selection-start-column="67" selection-end-line="31" selection-end-column="67" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DhlSolver.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/solvers/DhlSolver.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="332">
-              <caret line="54" column="8" selection-start-line="54" selection-start-column="8" selection-end-line="56" selection-end-column="9" />
+            <state relative-caret-position="918">
+              <caret line="115" column="41" lean-forward="true" selection-start-line="115" selection-start-column="41" selection-end-line="115" selection-end-column="41" />
               <folding>
-                <element signature="e#17#95#0" expanded="true" />
+                <element signature="e#14#170#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="context.go" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/go/src/context/context.go">
+      <file leaf-file-name="StateManager.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/state/StateManager.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="228" column="74" lean-forward="true" selection-start-line="228" selection-start-column="74" selection-end-line="228" selection-end-column="74" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="asm_amd64.s" pinned="false" current-in-tab="false">
-        <entry file="file:///usr/local/go/src/runtime/asm_amd64.s">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="176">
-              <caret line="572" selection-start-line="572" selection-end-line="572" />
+            <state relative-caret-position="-77">
+              <caret line="15" column="1" lean-forward="true" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+              <folding>
+                <element signature="e#15#53#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -87,8 +44,53 @@
       <file leaf-file-name="ISolver.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/solvers/ISolver.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+            <state relative-caret-position="60">
+              <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DhlSolver.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/solvers/DhlSolver.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="46">
+              <caret line="81" column="12" selection-start-line="81" selection-start-column="12" selection-end-line="81" selection-end-column="12" />
+              <folding>
+                <element signature="e#17#102#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FanCourierSolver.go" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/solvers/FanCourierSolver.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="70">
+              <caret line="93" column="34" selection-start-line="93" selection-start-column="34" selection-end-line="93" selection-end-column="34" />
+              <folding>
+                <element signature="e#17#120#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UnknownSolver.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/solvers/UnknownSolver.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="210">
+              <caret line="14" column="39" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
+              <folding>
+                <element signature="e#17#43#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SWit.go" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/wit/SWit.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -115,6 +117,9 @@
       <find>solvers.</find>
       <find>Dhl</find>
       <find>build</find>
+      <find>client</find>
+      <find>process</find>
+      <find>println</find>
     </findStrings>
     <replaceStrings>
       <replace>FanCourier</replace>
@@ -145,10 +150,11 @@
         <option value="$PROJECT_DIR$/src/solvers/IPackage.go" />
         <option value="$PROJECT_DIR$/src/solvers/ISolver.go" />
         <option value="$PROJECT_DIR$/readme.txt" />
-        <option value="$PROJECT_DIR$/src/solvers/FanCourierSolver.go" />
+        <option value="$PROJECT_DIR$/src/state/StateManager.go" />
         <option value="$PROJECT_DIR$/src/solvers/UnknownSolver.go" />
         <option value="$PROJECT_DIR$/Main.go" />
         <option value="$PROJECT_DIR$/src/solvers/DhlSolver.go" />
+        <option value="$PROJECT_DIR$/src/solvers/FanCourierSolver.go" />
       </list>
     </option>
   </component>
@@ -194,6 +200,18 @@
               <item name="GO" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="solvers" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="GO" type="b2602c69:ProjectViewProjectNode" />
+              <item name="GO" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="state" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="GO" type="b2602c69:ProjectViewProjectNode" />
+              <item name="GO" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="wit" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -255,24 +273,24 @@
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="right" id="Database" order="3" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3296593" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.21342686" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.26753506" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.36973947" />
+      <window_info anchor="bottom" id="Debug" order="3" visible="true" weight="0.30360723" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3296593" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -283,19 +301,16 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="DlvLineBreakpoint">
-          <url>file://$PROJECT_DIR$/Main.go</url>
-          <line>139</line>
-          <properties />
-          <option name="timeStamp" value="97" />
-        </line-breakpoint>
-      </breakpoints>
-      <option name="time" value="98" />
+      <option name="time" value="106" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
+      <expression>
+        <expression-string>stateObj.states</expression-string>
+        <language-id>go</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
       <expression>
         <expression-string>bestEntityCo§</expression-string>
         <language-id>go</language-id>
@@ -334,26 +349,12 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/solvers/FanCourierSolver.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1740">
-          <caret line="116" selection-start-line="116" selection-end-line="116" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/solvers/ISolver.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="3" column="18" selection-start-line="3" selection-start-column="4" selection-end-line="3" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/solvers/DhlSolver.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1350">
           <caret line="97" column="5" lean-forward="true" selection-start-line="97" selection-start-column="5" selection-end-line="97" selection-end-column="5" />
           <folding>
-            <element signature="e#17#95#0" expanded="true" />
+            <element signature="e#17#102#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -399,7 +400,7 @@
         <state relative-caret-position="600">
           <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
           <folding>
-            <element signature="e#17#95#0" expanded="true" />
+            <element signature="e#17#102#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -539,13 +540,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/wit/SWit.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="54" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///usr/local/go/src/runtime/panic.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="591">
@@ -568,10 +562,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/solvers/ISolver.go">
+    <entry file="file:///usr/local/go/src/context/context.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="6" column="4" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+        <state relative-caret-position="133">
+          <caret line="228" column="74" lean-forward="true" selection-start-line="228" selection-start-column="74" selection-end-line="228" selection-end-column="74" />
         </state>
       </provider>
     </entry>
@@ -582,41 +576,74 @@
         </state>
       </provider>
     </entry>
-    <entry file="file:///usr/local/go/src/context/context.go">
+    <entry file="file:///usr/local/go/src/runtime/proc.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="228" column="74" lean-forward="true" selection-start-line="228" selection-start-column="74" selection-end-line="228" selection-end-column="74" />
+        <state relative-caret-position="2205">
+          <caret line="151" selection-start-line="151" selection-end-line="151" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/wit/SWit.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/solvers/UnknownSolver.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="72" lean-forward="true" selection-start-line="11" selection-start-column="72" selection-end-line="11" selection-end-column="72" />
+        <state relative-caret-position="210">
+          <caret line="14" column="39" selection-start-line="14" selection-start-column="39" selection-end-line="14" selection-end-column="39" />
+          <folding>
+            <element signature="e#17#43#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="125" selection-start-line="125" selection-end-line="125" />
+        <state relative-caret-position="918">
+          <caret line="115" column="41" lean-forward="true" selection-start-line="115" selection-start-column="41" selection-end-line="115" selection-end-column="41" />
+          <folding>
+            <element signature="e#14#170#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/solvers/ISolver.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="4" lean-forward="true" selection-start-line="4" selection-end-line="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/state/StateManager.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-77">
+          <caret line="15" column="1" lean-forward="true" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+          <folding>
+            <element signature="e#15#53#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/solvers/DhlSolver.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="332">
-          <caret line="54" column="8" selection-start-line="54" selection-start-column="8" selection-end-line="56" selection-end-column="9" />
+        <state relative-caret-position="46">
+          <caret line="81" column="12" selection-start-line="81" selection-start-column="12" selection-end-line="81" selection-end-column="12" />
           <folding>
-            <element signature="e#17#95#0" expanded="true" />
+            <element signature="e#17#102#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/solvers/FanCourierSolver.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-294">
-          <caret line="31" column="67" lean-forward="true" selection-start-line="31" selection-start-column="67" selection-end-line="31" selection-end-column="67" />
+        <state relative-caret-position="70">
+          <caret line="93" column="34" selection-start-line="93" selection-start-column="34" selection-end-line="93" selection-end-column="34" />
+          <folding>
+            <element signature="e#17#120#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
