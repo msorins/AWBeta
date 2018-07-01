@@ -11,9 +11,10 @@ import (
 )
 
 type awbDhlSolver struct {
-	awb string
-	url string
-	Statuses []AwbDhlCheckpoint
+	awb                string
+	url                string
+	Statuses           []AwbDhlCheckpoint
+	LastSolverResponse SolverResponse
 }
 
 type AWbDhlResponse struct {
@@ -38,7 +39,7 @@ func AwbDhlSolverBuilder(awb string, entities map[string][]wit.WitEntity) ISolve
 	return &awbSolver
 }
 
-func (solver *awbDhlSolver) updateStatuses() {
+func (solver *awbDhlSolver) updateStatuses() SolverResponse {
 	var urlToSend string
 	urlToSend = solver.url + url.QueryEscape(solver.awb)
 
@@ -53,7 +54,8 @@ func (solver *awbDhlSolver) updateStatuses() {
 
 		// Assign it to class member
 		if len(rs.Results) == 0 {
-			return
+			solver.LastSolverResponse = SOLVER_AWB_INCORRECT
+			return SOLVER_AWB_INCORRECT
 		}
 		for _, value := range  rs.Results[0].Checkpoints {
 			solver.Statuses = append(solver.Statuses, value)
@@ -63,13 +65,16 @@ func (solver *awbDhlSolver) updateStatuses() {
 			return solver.Statuses[i].Index > solver.Statuses[j].Index
 		})
 	} else {
-		fmt.Println("Error in r1 equest")
+		solver.LastSolverResponse = SOLVER_BAD_REQUEST
+		return SOLVER_BAD_REQUEST
 	}
 
+	solver.LastSolverResponse = SOLVER_OK
+	return SOLVER_OK
 }
 
-func (awbsolver *awbDhlSolver) GetStatuses() []string {
-	awbsolver.updateStatuses()
+func (awbsolver *awbDhlSolver) GetStatuses() ([]string, SolverResponse) {
+	responseCode := awbsolver.updateStatuses()
 	updatedStatuses := awbsolver.Statuses
 
 	results := []string{}
@@ -84,11 +89,11 @@ func (awbsolver *awbDhlSolver) GetStatuses() []string {
 	}
 
 
-	return results
+	return results, responseCode
 }
 
-func (awbsolver *awbDhlSolver) GetLastStatus() []string{
-	awbsolver.updateStatuses()
+func (awbsolver *awbDhlSolver) GetLastStatus() ([]string, SolverResponse){
+	responseCode := awbsolver.updateStatuses()
 	updatedStatuses := awbsolver.Statuses
 
 	results := []string{}
@@ -101,7 +106,7 @@ func (awbsolver *awbDhlSolver) GetLastStatus() []string{
 	}
 
 
-	return results
+	return results, responseCode
 }
 
 func transformDhlSolverRequest(bodyBytes []byte) AWbDhlResponse {

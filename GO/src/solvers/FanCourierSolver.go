@@ -13,9 +13,10 @@ import (
 )
 
 type awbFanCourierSolver struct {
-	awb string
-	url string
-	Statuses []AWbFanCourierCheckpoint
+	awb                string
+	url                string
+	Statuses           []AWbFanCourierCheckpoint
+	LastSolverResponse SolverResponse
 }
 
 type AWbFanCourierResponse struct {
@@ -36,7 +37,7 @@ func AwbFanCourierSolverBuilder(awb string, entities map[string][]wit.WitEntity)
 	return &awbSolver
 }
 
-func (solver *awbFanCourierSolver) updateStatuses()  {
+func (solver *awbFanCourierSolver) updateStatuses() SolverResponse {
 	var urlToSend string
 	urlToSend = solver.url
 
@@ -56,10 +57,10 @@ func (solver *awbFanCourierSolver) updateStatuses()  {
 
 		// Transform it to a struct
 		rs := transformFanCourierSolverRequest(bodyBytes)
-		fmt.Println(rs)
 
-		for key, value := range rs.Entities {
-			fmt.Printf("%s -> %s\n", key, value)
+		if len(rs.Entities) == 0 {
+			solver.LastSolverResponse = SOLVER_AWB_INCORRECT
+			return SOLVER_AWB_INCORRECT
 		}
 
 		// Assign it to class member
@@ -78,15 +79,17 @@ func (solver *awbFanCourierSolver) updateStatuses()  {
 		})
 
 		solver.Statuses = lst
-		fmt.Println(lst)
 	} else {
-		fmt.Println("Error in request")
+		solver.LastSolverResponse = SOLVER_BAD_REQUEST
+		return SOLVER_BAD_REQUEST
 	}
 
+	solver.LastSolverResponse = SOLVER_OK
+	return SOLVER_OK
 }
 
-func (awbsolver *awbFanCourierSolver) GetStatuses() []string {
-	awbsolver.updateStatuses()
+func (awbsolver *awbFanCourierSolver) GetStatuses() ([]string, SolverResponse) {
+	responseCode := awbsolver.updateStatuses()
 	updatedStatuses := awbsolver.Statuses
 
 	results := []string{}
@@ -100,11 +103,11 @@ func (awbsolver *awbFanCourierSolver) GetStatuses() []string {
 		results = append(results, "Could not found any records for your AWB")
 	}
 
-	return results
+	return results, responseCode
 }
 
-func (awbsolver *awbFanCourierSolver) GetLastStatus() []string {
-	awbsolver.updateStatuses()
+func (awbsolver *awbFanCourierSolver) GetLastStatus() ([]string, SolverResponse)  {
+	responseCode := awbsolver.updateStatuses()
 	updatedStatuses := awbsolver.Statuses
 
 	results := []string{}
@@ -116,7 +119,7 @@ func (awbsolver *awbFanCourierSolver) GetLastStatus() []string {
 		results = append(results, "Could not found any records for your AWB")
 	}
 
-	return results
+	return results, responseCode
 }
 
 func transformFanCourierSolverRequest(bodyBytes []byte) AWbFanCourierResponse {

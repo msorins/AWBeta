@@ -128,12 +128,13 @@ func witToRes(stateManager state.StateManager, userId string, bodyBytes []byte) 
 
 	// Get the handler needed to process
 	handler := processMessageType(rw)
-	res := handler.GetLastStatus()
+	res, responseCode := handler.GetLastStatus()
 
 	// Update the stateManager
-	stateManager.SetState(userId, handler, "ok")
+	stateManager.SetState(userId, handler, "REQUESTED_AWB_STATUS")
 
 	// Return the response
+	fmt.Println(responseCode)
 	return res
 }
 
@@ -162,7 +163,6 @@ func processMessageType(data wit.WitResponseStructMap) solvers.ISolver {
 			}
 
 		}
-		fmt.Printf("%s   ->  v%s \n", key, value)
 	}
 
 	// Call the resolver for the given awb & courier firm
