@@ -47,7 +47,7 @@ func main() {
 	fmt.Println( messageHandleToRes(st, messageMock) )
 }
 
-func messengerServer(stateManager state.StateManager) {
+func messengerServer(stateManager *state.StateManager) {
 
 	flag.Parse()
 
@@ -97,7 +97,7 @@ func messengerServer(stateManager state.StateManager) {
 	log.Fatal(http.ListenAndServe(addr, client.Handler()))
 }
 
-func messageHandleToRes(stateManager state.StateManager, message messenger.Message) []string {
+func messageHandleToRes(stateManager *state.StateManager, message messenger.Message) []string {
 	// Get the message text & form WIT request
 	var urlToSend string
 	urlToSend = "https://api.wit.ai/message?v=20180617&q=" + url.QueryEscape(message.Text)
@@ -122,20 +122,33 @@ func messageHandleToRes(stateManager state.StateManager, message messenger.Messa
 	return []string{}
 }
 
-func witToRes(stateManager state.StateManager, userId string, bodyBytes []byte) []string {
+// Here must implement the flow
+// TO DO: Pass by reference
+func witToRes(stateManager *state.StateManager, userId string, bodyBytes []byte) []string {
 	// Transform byte array into an response
 	rw := transformWitResponse(bodyBytes)
 
-	// Get the handler needed to process
-	handler := processMessageType(rw)
-	res, responseCode := handler.GetLastStatus()
+	if stateManager.IdExists(userId) {
 
-	// Update the stateManager
-	stateManager.SetState(userId, handler, "REQUESTED_AWB_STATUS")
+	} else {
+		// Get the handler needed to process
+		handler := processMessageType(rw)
+		res, responseCode := handler.GetLastStatus()
 
-	// Return the response
-	fmt.Println(responseCode)
-	return res
+		// Update the stateManager
+		switch responseCode {
+			case solvers.SOLVER_OK:
+				stateManager.SetState(userId, handler, "REQUESTED_AWB_STATUS")
+			case solvers.SOLVER_AWB_INCORRECT:
+				res = append(res, "Could you please specify a courier name?")
+				stateManager.SetState(userId, handler, "REQUESTED_PROVIDER_NAME")
+
+		}
+
+		return res
+	}
+
+	return []string{}
 }
 
 func transformWitResponse(bodyBytes []byte) wit.WitResponseStructMap {

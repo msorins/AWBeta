@@ -122,6 +122,10 @@ func (awbsolver *awbFanCourierSolver) GetLastStatus() ([]string, SolverResponse)
 	return results, responseCode
 }
 
+func (awbsolver *awbFanCourierSolver) GetLastSolverResponse() SolverResponse {
+	return awbsolver.LastSolverResponse
+}
+
 func transformFanCourierSolverRequest(bodyBytes []byte) AWbFanCourierResponse {
 	var awbResponse AWbFanCourierResponse
 	json.Unmarshal(bodyBytes, &awbResponse)

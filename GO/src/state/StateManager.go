@@ -63,3 +63,12 @@ func (stateObj *StateManager) UpdateSolver(id string, newSolver solvers.ISolver)
 
 	return nil
 }
+
+func (stateObj *StateManager) IdExists(id string) bool {
+	_, found := stateObj.states[id]
+	if found == false {
+		return false;
+	}
+
+	return true
+}

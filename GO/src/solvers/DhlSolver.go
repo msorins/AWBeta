@@ -109,6 +109,10 @@ func (awbsolver *awbDhlSolver) GetLastStatus() ([]string, SolverResponse){
 	return results, responseCode
 }
 
+func (awbsolver *awbDhlSolver) GetLastSolverResponse() SolverResponse {
+	return awbsolver.LastSolverResponse
+}
+
 func transformDhlSolverRequest(bodyBytes []byte) AWbDhlResponse {
 	var awbResponse AWbDhlResponse
 	json.Unmarshal(bodyBytes, &awbResponse)
