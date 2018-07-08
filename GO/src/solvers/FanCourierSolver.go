@@ -58,7 +58,7 @@ func (solver *awbFanCourierSolver) updateStatuses() SolverResponse {
 		// Transform it to a struct
 		rs := transformFanCourierSolverRequest(bodyBytes)
 
-		if len(rs.Entities) == 0 {
+		if len(rs.Entities) <= 3 {
 			solver.LastSolverResponse = SOLVER_AWB_INCORRECT
 			return SOLVER_AWB_INCORRECT
 		}
@@ -133,3 +133,6 @@ func transformFanCourierSolverRequest(bodyBytes []byte) AWbFanCourierResponse {
 	return awbResponse
 }
 
+func (awbsolver *awbFanCourierSolver) GetAwb() string {
+	return awbsolver.awb
+}

@@ -120,3 +120,7 @@ func transformDhlSolverRequest(bodyBytes []byte) AWbDhlResponse {
 	return awbResponse
 }
 
+func (awbsolver *awbDhlSolver) GetAwb() string {
+	return awbsolver.awb
+}
+

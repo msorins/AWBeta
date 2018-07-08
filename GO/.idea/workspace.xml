@@ -8,6 +8,7 @@
       <change beforePath="$PROJECT_DIR$/pkg/darwin_amd64/state.a" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/darwin_amd64/state.a" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/solvers/DhlSolver.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/solvers/DhlSolver.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/solvers/FanCourierSolver.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/solvers/FanCourierSolver.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/solvers/ISolver.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/solvers/ISolver.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/solvers/UnknownSolver.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/solvers/UnknownSolver.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/state/StateManager.go" beforeDir="false" afterPath="$PROJECT_DIR$/src/state/StateManager.go" afterDir="false" />
     </list>
@@ -23,8 +24,8 @@
       <file leaf-file-name="Main.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Main.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="166">
-              <caret line="122" column="1" lean-forward="true" selection-start-line="122" selection-start-column="1" selection-end-line="122" selection-end-column="1" />
+            <state relative-caret-position="185">
+              <caret line="31" column="40" lean-forward="true" selection-start-line="31" selection-start-column="40" selection-end-line="31" selection-end-column="40" />
               <folding>
                 <element signature="e#14#170#0" expanded="true" />
               </folding>
@@ -35,8 +36,8 @@
       <file leaf-file-name="StateManager.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/state/StateManager.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1035">
-              <caret line="73" column="1" selection-start-line="73" selection-start-column="1" selection-end-line="73" selection-end-column="1" />
+            <state relative-caret-position="149">
+              <caret line="10" column="5" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
               <folding>
                 <element signature="e#15#53#0" expanded="true" />
               </folding>
@@ -47,8 +48,8 @@
       <file leaf-file-name="ISolver.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/solvers/ISolver.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="105">
-              <caret line="7" column="46" selection-start-line="7" selection-start-column="46" selection-end-line="7" selection-end-column="46" />
+            <state relative-caret-position="45">
+              <caret line="3" column="24" lean-forward="true" selection-start-line="3" selection-start-column="24" selection-end-line="3" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -65,8 +66,8 @@
       <file leaf-file-name="DhlSolver.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/solvers/DhlSolver.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1440">
-              <caret line="104" column="71" selection-start-line="104" selection-start-column="71" selection-end-line="104" selection-end-column="71" />
+            <state relative-caret-position="555">
+              <caret line="122" column="29" selection-start-line="122" selection-start-column="29" selection-end-line="122" selection-end-column="29" />
               <folding>
                 <element signature="e#17#102#0" expanded="true" />
               </folding>
@@ -77,8 +78,8 @@
       <file leaf-file-name="FanCourierSolver.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/solvers/FanCourierSolver.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1470">
-              <caret line="108" column="43" selection-start-line="108" selection-start-column="38" selection-end-line="108" selection-end-column="43" />
+            <state relative-caret-position="420">
+              <caret line="126" column="1" lean-forward="true" selection-start-line="126" selection-start-column="1" selection-end-line="126" selection-end-column="1" />
               <folding>
                 <element signature="e#17#120#0" expanded="true" />
               </folding>
@@ -89,8 +90,8 @@
       <file leaf-file-name="UnknownSolver.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/solvers/UnknownSolver.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="495">
-              <caret line="35" selection-start-line="35" selection-end-line="35" />
+            <state relative-caret-position="630">
+              <caret line="44" column="24" lean-forward="true" selection-start-line="44" selection-start-column="24" selection-end-line="44" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -132,6 +133,11 @@
       <find>get</find>
       <find>getLa</find>
       <find>stateManager</find>
+      <find>setState</find>
+      <find>remove</find>
+      <find>MESSAGEHANDLE</find>
+      <find>err</find>
+      <find>getState</find>
     </findStrings>
     <replaceStrings>
       <replace>FanCourier</replace>
@@ -161,12 +167,12 @@
         <option value="$PROJECT_DIR$/src/wit/SWit.go" />
         <option value="$PROJECT_DIR$/src/solvers/IPackage.go" />
         <option value="$PROJECT_DIR$/readme.txt" />
-        <option value="$PROJECT_DIR$/src/solvers/ISolver.go" />
         <option value="$PROJECT_DIR$/src/solvers/SolverResponse.go" />
-        <option value="$PROJECT_DIR$/src/state/StateManager.go" />
+        <option value="$PROJECT_DIR$/src/solvers/ISolver.go" />
         <option value="$PROJECT_DIR$/src/solvers/FanCourierSolver.go" />
         <option value="$PROJECT_DIR$/src/solvers/DhlSolver.go" />
         <option value="$PROJECT_DIR$/src/solvers/UnknownSolver.go" />
+        <option value="$PROJECT_DIR$/src/state/StateManager.go" />
         <option value="$PROJECT_DIR$/Main.go" />
       </list>
     </option>
@@ -292,7 +298,7 @@
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.26753506" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.26753506" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="8" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -314,48 +320,58 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="109" />
+      <option name="time" value="119" />
     </breakpoint-manager>
   </component>
   <component name="debuggerHistoryManager">
     <expressions id="evaluateExpression">
       <expression>
-        <expression-string>stateObj.states</expression-string>
+        <expression-string>stateOfUser.State</expression-string>
         <language-id>go</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>bestEntityCo§</expression-string>
+        <expression-string>stateOfUser.solver</expression-string>
         <language-id>go</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>data.Entities§</expression-string>
+        <expression-string>stateOfUser.solver.getStatues()</expression-string>
         <language-id>go</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>data.Entities</expression-string>
+        <expression-string>stateOfUser.solver.data</expression-string>
         <language-id>go</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>solver.GetStatusesForAwb()[0]</expression-string>
+        <expression-string>err == nil</expression-string>
         <language-id>go</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>witRespondeDataMap</expression-string>
+        <expression-string>err != nil</expression-string>
         <language-id>go</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>url</expression-string>
+        <expression-string>err != void</expression-string>
         <language-id>go</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
       <expression>
-        <expression-string>url.QueryEscape(urlToSend)</expression-string>
+        <expression-string>err</expression-string>
+        <language-id>go</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(rs.Entities)</expression-string>
+        <language-id>go</language-id>
+        <evaluation-mode>EXPRESSION</evaluation-mode>
+      </expression>
+      <expression>
+        <expression-string>len(rs.Entities[&quot;mesaj&quot;])</expression-string>
         <language-id>go</language-id>
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
@@ -593,30 +609,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/solvers/ISolver.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="105">
-          <caret line="7" column="46" selection-start-line="7" selection-start-column="46" selection-end-line="7" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/solvers/UnknownSolver.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="495">
-          <caret line="35" selection-start-line="35" selection-end-line="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/state/StateManager.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1035">
-          <caret line="73" column="1" selection-start-line="73" selection-start-column="1" selection-end-line="73" selection-end-column="1" />
-          <folding>
-            <element signature="e#15#53#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/solvers/SolverResponse.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -624,30 +616,54 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/solvers/DhlSolver.go">
+    <entry file="file://$PROJECT_DIR$/src/solvers/ISolver.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1440">
-          <caret line="104" column="71" selection-start-line="104" selection-start-column="71" selection-end-line="104" selection-end-column="71" />
-          <folding>
-            <element signature="e#17#102#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="45">
+          <caret line="3" column="24" lean-forward="true" selection-start-line="3" selection-start-column="24" selection-end-line="3" selection-end-column="24" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/solvers/FanCourierSolver.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1470">
-          <caret line="108" column="43" selection-start-line="108" selection-start-column="38" selection-end-line="108" selection-end-column="43" />
+        <state relative-caret-position="420">
+          <caret line="126" column="1" lean-forward="true" selection-start-line="126" selection-start-column="1" selection-end-line="126" selection-end-column="1" />
           <folding>
             <element signature="e#17#120#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/solvers/DhlSolver.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="555">
+          <caret line="122" column="29" selection-start-line="122" selection-start-column="29" selection-end-line="122" selection-end-column="29" />
+          <folding>
+            <element signature="e#17#102#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/solvers/UnknownSolver.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="630">
+          <caret line="44" column="24" lean-forward="true" selection-start-line="44" selection-start-column="24" selection-end-line="44" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/state/StateManager.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="149">
+          <caret line="10" column="5" selection-start-line="10" selection-start-column="5" selection-end-line="10" selection-end-column="5" />
+          <folding>
+            <element signature="e#15#53#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Main.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="166">
-          <caret line="122" column="1" lean-forward="true" selection-start-line="122" selection-start-column="1" selection-end-line="122" selection-end-column="1" />
+        <state relative-caret-position="185">
+          <caret line="31" column="40" lean-forward="true" selection-start-line="31" selection-start-column="40" selection-end-line="31" selection-end-column="40" />
           <folding>
             <element signature="e#14#170#0" expanded="true" />
           </folding>

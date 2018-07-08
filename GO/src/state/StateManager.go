@@ -7,8 +7,8 @@ import (
 )
 
 type StateManagerStruct struct {
-	solver solvers.ISolver
-	state string
+	Solver solvers.ISolver
+	State  string
 }
 
 type StateManager struct {
@@ -22,7 +22,7 @@ func StateManagerBuilder() StateManager {
 }
 
 func (stateObj *StateManager) SetState(id string, solver solvers.ISolver, state string) error {
-	var newState = StateManagerStruct{solver:solver, state:state}
+	var newState = StateManagerStruct{Solver:solver, State:state}
 	stateObj.states[id] = newState
 
 	return nil
@@ -45,8 +45,19 @@ func (stateObj *StateManager) UpdateState(id string, newState string) error {
 	}
 
 	var stateOfId = stateObj.states[id]
-	stateOfId.state = newState
+	stateOfId.State = newState
 	stateObj.states[id] = stateOfId
+
+	return nil
+}
+
+func (stateObj *StateManager) RemoveState(id string) error {
+	_, found := stateObj.states[id]
+	if found == false {
+		return errors.New(fmt.Sprintf("Id %s not found in the StateManager", id))
+	}
+
+	delete(stateObj.states, id)
 
 	return nil
 }
@@ -58,7 +69,7 @@ func (stateObj *StateManager) UpdateSolver(id string, newSolver solvers.ISolver)
 	}
 
 	var stateOfId = stateObj.states[id]
-	stateOfId.solver = newSolver
+	stateOfId.Solver = newSolver
 	stateObj.states[id] = stateOfId
 
 	return nil

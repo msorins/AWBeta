@@ -6,4 +6,5 @@ type ISolver interface {
 
 	GetStatuses() ([]string, SolverResponse)
 	GetLastStatus() ([]string, SolverResponse)
+	GetAwb() string
 }

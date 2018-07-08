@@ -40,3 +40,7 @@ func (awbsolver *unknownCourierSolver) GetLastStatus() ([]string, SolverResponse
 func (awbsolver *unknownCourierSolver) GetLastSolverResponse() SolverResponse {
 	return SOLVER_AWB_INCORRECT
 }
+
+func (awbsolver *unknownCourierSolver) GetAwb() string {
+	return awbsolver.awb
+}
