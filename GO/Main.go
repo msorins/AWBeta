@@ -43,11 +43,19 @@ func main() {
 	messageMock := messenger.Message{}
 	messageMock.Sender.ID = 123456
 
-	messageMock.Text = "Hi, what's the status for 1032810250356"
+
+	messageMock.Text = "2627190725"
 	fmt.Println( messageHandleToRes(&st, messageMock) )
 
-	messageMock.Text = "My awb was from DHL"
+	messageMock.Text = "DHL"
 	fmt.Println( messageHandleToRes(&st, messageMock) )
+
+
+	//messageMock.Text = "Hi, what's the status for 1032810250356"
+	//fmt.Println( messageHandleToRes(&st, messageMock) )
+	//
+	//messageMock.Text = "My awb was from DHL"
+	//fmt.Println( messageHandleToRes(&st, messageMock) )
 }
 
 func messengerServer(stateManager *state.StateManager) {
@@ -120,6 +128,8 @@ func messageHandleToRes(stateManager *state.StateManager, message messenger.Mess
 
 		// Return the result ( a list of strings )
 		return sentToUSer
+	} else {
+		return []string{ "Something fishy has happened" }
 	}
 
 	return []string{}

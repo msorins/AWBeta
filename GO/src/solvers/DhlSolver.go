@@ -80,12 +80,12 @@ func (awbsolver *awbDhlSolver) GetStatuses() ([]string, SolverResponse) {
 	results := []string{}
 
 	if len(updatedStatuses) >= 1 {
-		results = append(results, "These are all the steps taken by your DHL package")
+		results = append(results, "DHL: These are all the steps taken by your DHL package")
 		for _, status := range updatedStatuses {
 			results = append(results, fmt.Sprintf("%s %s %s", status.Status, status.Date, status.Time))
 		}
 	} else {
-		results = append(results, "Could not found any records for your AWB")
+		results = append(results, "DHL: Could not found any records for your AWB")
 	}
 
 
@@ -99,10 +99,10 @@ func (awbsolver *awbDhlSolver) GetLastStatus() ([]string, SolverResponse){
 	results := []string{}
 
 	if len(updatedStatuses) >= 1 {
-		results = append(results, "Successfully found the latest status of your DHL package")
+		results = append(results, "DHL: Successfully found the latest status of your DHL package")
 		results = append(results, fmt.Sprintf("%s, %s %s", updatedStatuses[0].Status, updatedStatuses[0].Date, updatedStatuses[0].Time))
 	} else {
-		results = append(results, "Could not found any records for your AWB")
+		results = append(results, "DHL: Could not found any records for your AWB")
 	}
 
 

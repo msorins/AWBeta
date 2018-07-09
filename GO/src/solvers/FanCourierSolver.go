@@ -95,12 +95,12 @@ func (awbsolver *awbFanCourierSolver) GetStatuses() ([]string, SolverResponse) {
 	results := []string{}
 
 	if len(updatedStatuses) >= 1 {
-		results = append(results, "These are all the steps taken by your FanCourier package")
+		results = append(results, "FAN: These are all the steps taken by your FanCourier package")
 		for _, status := range updatedStatuses {
 			results = append(results, fmt.Sprintf("%s, %s", status.Status, status.Date))
 		}
 	} else {
-		results = append(results, "Could not found any records for your AWB")
+		results = append(results, "FAN: Could not found any records for your AWB")
 	}
 
 	return results, responseCode
@@ -113,10 +113,10 @@ func (awbsolver *awbFanCourierSolver) GetLastStatus() ([]string, SolverResponse)
 	results := []string{}
 
 	if len(updatedStatuses) >= 1 {
-		results = append(results, "Successfully found the latest status of your FanCourier package")
+		results = append(results, "FAN: Successfully found the latest status of your FanCourier package")
 		results = append(results, fmt.Sprintf("%s, %s", updatedStatuses[0].Status, updatedStatuses[0].Date))
 	} else {
-		results = append(results, "Could not found any records for your AWB")
+		results = append(results, "FAN: Could not found any records for your AWB")
 	}
 
 	return results, responseCode
