@@ -146,19 +146,19 @@ func witToRes(stateManager *state.StateManager, userId string, bodyBytes []byte)
 		stateOfUser, _ := stateManager.GetState(userId)
 
 		switch stateOfUser.State {
-			case "REQUESTED_PROVIDER_NAME":
+			case state.USER_STATE_AWB_CONFUSING:
 				handler := getHandlerFromName(stateOfUser, rw)
 				res, responseCode := handler.GetLastStatus()
 
 				switch responseCode {
-				// Operation completed successfully -> delete the state
-				case solvers.SOLVER_OK:
-					stateManager.RemoveState(userId)
+					// Operation completed successfully -> delete the state
+					case solvers.SOLVER_OK:
+						stateManager.SetState(userId, handler, state.USER_STATE_AWB_OK)
 
-					// Provided awb was incorect -> ask him to specify the name of the awb
-				case solvers.SOLVER_AWB_INCORRECT:
-					res = append(res, "Please try again with other awb :)")
-					stateManager.RemoveState(userId)
+						// Provided awb was incorect -> ask him to specify the name of the awb
+					case solvers.SOLVER_AWB_INCORRECT:
+						res = append(res, "Please try again with other awb :)")
+						stateManager.RemoveState(userId)
 				}
 
 				return res;
@@ -172,12 +172,12 @@ func witToRes(stateManager *state.StateManager, userId string, bodyBytes []byte)
 		switch responseCode {
 			// Operation completed successfully -> delete the state
 			case solvers.SOLVER_OK:
-				stateManager.RemoveState(userId)
+				stateManager.SetState(userId, handler, state.USER_STATE_AWB_OK)
 
 			// Provided awb was incorect -> ask him to specify the name of the awb
 			case solvers.SOLVER_AWB_INCORRECT:
 				res = append(res, "Could you please specify a courier name?")
-				stateManager.SetState(userId, handler, "REQUESTED_PROVIDER_NAME")
+				stateManager.SetState(userId, handler, state.USER_STATE_AWB_CONFUSING)
 		}
 
 		return res

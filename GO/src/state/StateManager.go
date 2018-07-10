@@ -8,7 +8,7 @@ import (
 
 type StateManagerStruct struct {
 	Solver solvers.ISolver
-	State  string
+	State  UserState
 }
 
 type StateManager struct {
@@ -21,7 +21,7 @@ func StateManagerBuilder() StateManager {
 	return st
 }
 
-func (stateObj *StateManager) SetState(id string, solver solvers.ISolver, state string) error {
+func (stateObj *StateManager) SetState(id string, solver solvers.ISolver, state UserState) error {
 	var newState = StateManagerStruct{Solver:solver, State:state}
 	stateObj.states[id] = newState
 
@@ -38,7 +38,7 @@ func (stateObj *StateManager) GetState(id string) (StateManagerStruct, error) {
 	return stateObj.states[id], nil
 }
 
-func (stateObj *StateManager) UpdateState(id string, newState string) error {
+func (stateObj *StateManager) UpdateState(id string, newState UserState) error {
 	_, found := stateObj.states[id]
 	if found == false {
 		return errors.New(fmt.Sprintf("Id %s not found in the StateManager", id))
