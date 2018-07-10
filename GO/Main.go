@@ -44,18 +44,24 @@ func main() {
 	messageMock.Sender.ID = 123456
 
 
-	messageMock.Text = "2627190725"
-	fmt.Println( messageHandleToRes(&st, messageMock) )
-
-	messageMock.Text = "DHL"
-	fmt.Println( messageHandleToRes(&st, messageMock) )
-
-
-	//messageMock.Text = "Hi, what's the status for 1032810250356"
+	// CASE 1 -> SPECIFING THE RIGHT COURIER FIRM
+	//messageMock.Text = "2627190725"
 	//fmt.Println( messageHandleToRes(&st, messageMock) )
 	//
-	//messageMock.Text = "My awb was from DHL"
+	//messageMock.Text = "DHL"
 	//fmt.Println( messageHandleToRes(&st, messageMock) )
+
+
+	// CASE 2 -> ALRIGHT AWB
+	//messageMock.Text = "Hi, what's the status for 2032810250356"
+	//fmt.Println( messageHandleToRes(&st, messageMock) )
+
+	// CASE 3 -> ALRIGHT AWB -> Request all history for that awb
+	messageMock.Text = "Hi, what's the status for 2032810250356"
+	fmt.Println( messageHandleToRes(&st, messageMock) )
+
+	messageMock.Text = "Please show me all the statistics"
+	fmt.Println( messageHandleToRes(&st, messageMock) )
 }
 
 func messengerServer(stateManager *state.StateManager) {
@@ -162,6 +168,15 @@ func witToRes(stateManager *state.StateManager, userId string, bodyBytes []byte)
 				}
 
 				return res;
+
+			case state.USER_STATE_AWB_OK:
+				messageIntent := getMessageIntent(rw)
+
+				switch messageIntent {
+					case wit.MESSAGE_REQUEST_ALL_HISTORY:
+						res, _ := stateOfUser.Solver.GetStatuses()
+						return res
+				}
 		}
 	} else { // User has no state associated -> check the message for an awb
 		// Get the handler needed to process
@@ -228,4 +243,19 @@ func getHandlerFromName(stateOfRequester state.StateManagerStruct, data wit.WitR
 
 	// Call the resolver for the given awb & courier firm
 	return resolverMap[bestEntityCourierName](stateOfRequester.Solver.GetAwb(), data.Entities)
+}
+
+
+func getMessageIntent(data wit.WitResponseStructMap) wit.MessageIntent {
+	intent := wit.MESSAGE_NO_INTENT
+
+	intentEntity, exists := data.Entities["Intent"]
+	if exists == true {
+		switch intentEntity[0].Value {
+			case "REQUEST_ALL_HISTORY":
+				intent = wit.MESSAGE_REQUEST_ALL_HISTORY
+		}
+	}
+
+	return intent
 }
