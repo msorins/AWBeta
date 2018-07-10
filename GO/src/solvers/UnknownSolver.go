@@ -25,18 +25,22 @@ func (solver *unknownCourierSolver) updateStatuses() SolverResponse  {
 
 func (awbsolver *unknownCourierSolver) GetStatuses() ([]string, SolverResponse) {
 	results := []string{}
-	results = append(results, "Could not found and AWB and link it with a courier company")
+	results = append(results, "Unknown: Could not found and AWB in your message, please specify one")
 
 	return results, SOLVER_AWB_INCORRECT
 }
 
 func (awbsolver *unknownCourierSolver) GetLastStatus() ([]string, SolverResponse) {
 	results := []string{}
-	results = append(results, "Could not found and AWB and link it with a courier company")
+	results = append(results, "Unknown: Could not found and AWB in your message, please specify one")
 
 	return results, SOLVER_AWB_INCORRECT
 }
 
 func (awbsolver *unknownCourierSolver) GetLastSolverResponse() SolverResponse {
 	return SOLVER_AWB_INCORRECT
+}
+
+func (awbsolver *unknownCourierSolver) GetAwb() string {
+	return awbsolver.awb
 }
