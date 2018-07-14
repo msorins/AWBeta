@@ -176,6 +176,9 @@ func witToRes(stateManager *state.StateManager, userId string, bodyBytes []byte)
 					case wit.MESSAGE_REQUEST_ALL_HISTORY:
 						res, _ := stateOfUser.Solver.GetStatuses()
 						return res
+
+					case wit.MESSAGE_REQUEST_SUBSCRIPTION:
+
 				}
 		}
 	} else { // User has no state associated -> check the message for an awb
@@ -254,6 +257,9 @@ func getMessageIntent(data wit.WitResponseStructMap) wit.MessageIntent {
 		switch intentEntity[0].Value {
 			case "REQUEST_ALL_HISTORY":
 				intent = wit.MESSAGE_REQUEST_ALL_HISTORY
+
+			case  "REQUEST_SUBSCRIPTION":
+				intent = wit.MESSAGE_REQUEST_SUBSCRIPTION
 		}
 	}
 
