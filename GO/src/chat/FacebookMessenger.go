@@ -7,6 +7,8 @@ import (
 	"time"
 	"state"
 	"strconv"
+	"log"
+	"net/http"
 )
 
 type facebookMessenger struct {
@@ -53,6 +55,9 @@ func (fb *facebookMessenger) HandleMessages(messageReceivedCallBack func(*state.
 		}
 	})
 
+	addr := fmt.Sprintf("%s:%d", *host, *port)
+	log.Println("Serving messenger bot on", addr)
+	log.Fatal(http.ListenAndServe(addr, fb.client.Handler()))
 }
 
 func (fb *facebookMessenger) SendMessage(userId string, msgs []string) {

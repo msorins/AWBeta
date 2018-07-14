@@ -122,9 +122,13 @@ func witToRes(stateManager *state.StateManager, userId string, bodyBytes []byte)
 					case wit.MESSAGE_REQUEST_ALL_HISTORY:
 						res, _ := stateOfUser.Solver.GetStatuses()
 						return res
-
 					case wit.MESSAGE_REQUEST_SUBSCRIPTION:
-
+						// TO DO
+						return nil
+					case wit.MESSAGE_REQUEST_NEW_AWB:
+						// Remove the state of the old awb && recall the function
+						stateManager.RemoveState(userId)
+						return witToRes(stateManager, userId, bodyBytes)
 				}
 		}
 	} else { // User has no state associated -> check the message for an awb
@@ -202,8 +206,11 @@ func getMessageIntent(data wit.WitResponseStructMap) wit.MessageIntent {
 			case "REQUEST_ALL_HISTORY":
 				intent = wit.MESSAGE_REQUEST_ALL_HISTORY
 
-			case  "REQUEST_SUBSCRIPTION":
+			case "REQUEST_SUBSCRIPTION":
 				intent = wit.MESSAGE_REQUEST_SUBSCRIPTION
+
+			case "REQUEST_NEW_AWB":
+				intent = wit.MESSAGE_REQUEST_NEW_AWB
 		}
 	}
 
