@@ -1,32 +1,19 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"encoding/json"
 	"github.com/paked/messenger"
-	"time"
 	"net/url"
 	"net/http"
-	"log"
-	"os"
 	"wit"
 	"solvers"
 	"io/ioutil"
 	"state"
+	"chat"
+	"strconv"
 )
 
-
-var (
-	verifyToken = flag.String("verify-token", "soarecelmaifainb@T", "The token used to verify facebook (required)")
-	verify      = flag.Bool("should-verify", false, "Whether or not the app should verify itself")
-	pageToken   = flag.String("page-token", "EAAcJw2oDsswBAPfJfJEXYC96SRHOAV37UmoPWVQ8ssaidzLdUPmYSOy1eGp7wEmJZC6MdiU10SuU5ptVE784YrsF092PmuUzPEmolR5pxYZAUaEH6PNL8hwRJKWBHjhRBDl9L6D2WyE6eJkBcY0buocNjuZAGD9n9fcopREFjiSR4qWeXFU", "The token that is used to verify the page on facebook")
-	appSecret   = flag.String("app-secret", "596b7437a204b6aaff57b4e72938afec", "The app secret from the facebook developer portal (required)")
-	host        = flag.String("host", "localhost", "The host used to serve the messenger bot")
-	port        = flag.Int("port", 3000, "The port used to serve the messenger bot")
-	witToken        = flag.String("witToken", "XSNNOAK5JCAEYUULJ6V6YJ6G45VSJ6TV", "Token for wit.ai")
-	couriers = []string{"Dhl", "FanCourier", "Cargus"}
-)
 
 var resolverMap = map[string]func(string,  map[string][]wit.WitEntity) solvers.ISolver {
 	"dhl" : solvers.AwbDhlSolverBuilder,
@@ -35,18 +22,20 @@ var resolverMap = map[string]func(string,  map[string][]wit.WitEntity) solvers.I
 }
 
 func main() {
-	// Real server
-	//messengerServer()
+	// Create the state object
+	st := state.StateManagerBuilder()
+
+	// Start Facebook Messenger Server
+	startFacebookMessengerServer(&st)
 
 	// Mock messages
-	st := state.StateManagerBuilder()
 	messageMock := messenger.Message{}
 	messageMock.Sender.ID = 123456
 
 
 	// CASE 1 -> SPECIFING THE RIGHT COURIER FIRM
-	//messageMock.Text = "2627190725"
-	//fmt.Println( messageHandleToRes(&st, messageMock) )
+	messageMock.Text = "2627190725"
+	fmt.Println( messageHandleToRes(&st, strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text) )
 	//
 	//messageMock.Text = "DHL"
 	//fmt.Println( messageHandleToRes(&st, messageMock) )
@@ -57,65 +46,22 @@ func main() {
 	//fmt.Println( messageHandleToRes(&st, messageMock) )
 
 	// CASE 3 -> ALRIGHT AWB -> Request all history for that awb
-	messageMock.Text = "Hi, what's the status for 2032810250356"
-	fmt.Println( messageHandleToRes(&st, messageMock) )
-
-	messageMock.Text = "Please show me all the statistics"
-	fmt.Println( messageHandleToRes(&st, messageMock) )
+	//messageMock.Text = "Hi, what's the status for 2032810250356"
+	//fmt.Println( messageHandleToRes(&st, messageMock) )
+	//
+	//messageMock.Text = "Please show me all the statistics"
+	//fmt.Println( messageHandleToRes(&st, messageMock) )
 }
 
-func messengerServer(stateManager *state.StateManager) {
-
-	flag.Parse()
-
-	if *verifyToken == "" || *appSecret == "" || *pageToken == "" {
-		fmt.Println("missing arguments")
-		fmt.Println()
-		flag.Usage()
-
-		os.Exit(-1)
-	}
-
-	// Create a new messenger client
-	client := messenger.New(messenger.Options{
-		Verify:      *verify,
-		AppSecret:   *appSecret,
-		VerifyToken: *verifyToken,
-		Token:       *pageToken,
-	})
-
-	// Setup a handler to be triggered when a message is received
-	client.HandleMessage(func(m messenger.Message, r *messenger.Response) {
-		fmt.Printf("%v (Sent, %v)\n", m.Text, m.Time.Format(time.UnixDate))
-
-		// Get the results for the message received
-		results := messageHandleToRes(stateManager, m)
-
-		// Send them to the user
-		for _, str := range results {
-			r.Text(str, messenger.ResponseType)
-		}
-	})
-
-	// Setup a handler to be triggered when a message is delivered
-	client.HandleDelivery(func(d messenger.Delivery, r *messenger.Response) {
-		fmt.Println("Delivered at:", d.Watermark().Format(time.UnixDate))
-	})
-
-	// Setup a handler to be triggered when a message is read
-	client.HandleRead(func(m messenger.Read, r *messenger.Response) {
-		fmt.Println("Read at:", m.Watermark().Format(time.UnixDate))
-	})
-
-	addr := fmt.Sprintf("%s:%d", *host, *port)
-	log.Println("Serving messenger bot on", addr)
-	log.Fatal(http.ListenAndServe(addr, client.Handler()))
+func startFacebookMessengerServer(stateManager *state.StateManager) {
+	fbm := chat.FacebookMessengerBuilder(stateManager)
+	fbm.HandleMessages(messageHandleToRes)
 }
 
-func messageHandleToRes(stateManager *state.StateManager, message messenger.Message) []string {
+func messageHandleToRes(stateManager *state.StateManager, senderId string, message string) []string {
 	// Get the message text & form WIT request
 	var urlToSend string
-	urlToSend = "https://api.wit.ai/message?v=20180617&q=" + url.QueryEscape(message.Text)
+	urlToSend = "https://api.wit.ai/message?v=20180617&q=" + url.QueryEscape(message)
 
 	clientWit := &http.Client{}
 	reqWit, _ := http.NewRequest("GET", urlToSend, nil)
@@ -128,7 +74,7 @@ func messageHandleToRes(stateManager *state.StateManager, message messenger.Mess
 
 		// Transform byte array into an response
 		var sentToUSer []string
-		sentToUSer = witToRes(stateManager, fmt.Sprintf("%v", message.Sender.ID), bodyBytes)
+		sentToUSer = witToRes(stateManager, fmt.Sprintf("%v", senderId), bodyBytes)
 
 		// Return the result ( a list of strings )
 		return sentToUSer
@@ -140,7 +86,6 @@ func messageHandleToRes(stateManager *state.StateManager, message messenger.Mess
 }
 
 // Here must implement the flow
-// TO DO: Pass by reference
 func witToRes(stateManager *state.StateManager, userId string, bodyBytes []byte) []string {
 	// Transform byte array into an response
 	rw := transformWitResponse(bodyBytes)
