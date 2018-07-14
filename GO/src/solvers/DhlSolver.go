@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"sort"
 	"wit"
+	"time"
 )
 
 type awbDhlSolver struct {
@@ -15,6 +16,7 @@ type awbDhlSolver struct {
 	url                string
 	Statuses           []AwbDhlCheckpoint
 	LastSolverResponse SolverResponse
+	lastUpdateCheck	time.Time
 }
 
 type AWbDhlResponse struct {

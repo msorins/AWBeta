@@ -84,7 +84,6 @@ func messengerServer(stateManager *state.StateManager) {
 		Token:       *pageToken,
 	})
 
-
 	// Setup a handler to be triggered when a message is received
 	client.HandleMessage(func(m messenger.Message, r *messenger.Response) {
 		fmt.Printf("%v (Sent, %v)\n", m.Text, m.Time.Format(time.UnixDate))
@@ -97,7 +96,6 @@ func messengerServer(stateManager *state.StateManager) {
 			r.Text(str, messenger.ResponseType)
 		}
 	})
-
 
 	// Setup a handler to be triggered when a message is delivered
 	client.HandleDelivery(func(d messenger.Delivery, r *messenger.Response) {
@@ -218,8 +216,7 @@ func getHandlerFromAwb(data wit.WitResponseStructMap) solvers.ISolver {
 	bestEntityCourierName = "unknown"
 	bestEntity := wit.WitEntity{}
 	bestEntity.Confidence = -1
-
-
+	
 	for key, value := range data.Entities {
 		if value[0].Confidence > bestEntity.Confidence{
 			_, ok := resolverMap[ key ]
@@ -247,7 +244,6 @@ func getHandlerFromName(stateOfRequester state.StateManagerStruct, data wit.WitR
 	// Call the resolver for the given awb & courier firm
 	return resolverMap[bestEntityCourierName](stateOfRequester.Solver.GetAwb(), data.Entities)
 }
-
 
 func getMessageIntent(data wit.WitResponseStructMap) wit.MessageIntent {
 	intent := wit.MESSAGE_NO_INTENT
