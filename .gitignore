@@ -1,4 +1,7 @@
 #Exclude tsc generated files
+GO/pkg/
+*.a
+
 *.map
 *d.ts
 

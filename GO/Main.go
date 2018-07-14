@@ -171,6 +171,9 @@ func witToRes(stateManager *state.StateManager, userId string, bodyBytes []byte)
 				messageIntent := getMessageIntent(rw)
 
 				switch messageIntent {
+					case wit.MESSAGE_NO_INTENT:
+						res, _ := stateOfUser.Solver.GetLastStatus()
+						return res
 					case wit.MESSAGE_REQUEST_ALL_HISTORY:
 						res, _ := stateOfUser.Solver.GetStatuses()
 						return res
@@ -216,7 +219,7 @@ func getHandlerFromAwb(data wit.WitResponseStructMap) solvers.ISolver {
 	bestEntityCourierName = "unknown"
 	bestEntity := wit.WitEntity{}
 	bestEntity.Confidence = -1
-	
+
 	for key, value := range data.Entities {
 		if value[0].Confidence > bestEntity.Confidence{
 			_, ok := resolverMap[ key ]
