@@ -72,3 +72,9 @@ typings/
 
 # Serverless directories
 .serverless
+
+GO/src/github\.com/stretchr/
+
+GO/src/github\.com/paked/
+
+GO/\.idea/workspace\.xml
