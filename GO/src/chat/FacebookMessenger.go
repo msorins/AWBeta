@@ -9,11 +9,13 @@ import (
 	"strconv"
 	"log"
 	"net/http"
+	"subscription"
 )
 
 type facebookMessenger struct {
 	client *messenger.Messenger
 	stateManager *state.StateManager
+	subscriptionManager *subscription.SubscriptionManager
 }
 
 var (
@@ -28,7 +30,7 @@ var (
 )
 
 
-func FacebookMessengerBuilder(stateManager *state.StateManager) IChat {
+func FacebookMessengerBuilder(stateManager *state.StateManager, subscriptionManager *subscription.SubscriptionManager) IChat {
 	client := messenger.New(messenger.Options{
 		Verify:      *verify,
 		AppSecret:   *appSecret,
@@ -36,18 +38,18 @@ func FacebookMessengerBuilder(stateManager *state.StateManager) IChat {
 		Token:       *pageToken,
 	})
 
-	fbm := facebookMessenger{client, stateManager}
+	fbm := facebookMessenger{client, stateManager, subscriptionManager}
 
 	return &fbm
 }
 
-func (fb *facebookMessenger) HandleMessages(messageReceivedCallBack func(*state.StateManager, string, string) []string) {
+func (fb *facebookMessenger) HandleMessages(messageReceivedCallBack func(*state.StateManager, *subscription.SubscriptionManager, string, string) []string) {
 
 	fb.client.HandleMessage(func(m messenger.Message, r *messenger.Response) {
 		fmt.Printf("%v (Sent, %v)\n", m.Text, m.Time.Format(time.UnixDate))
 
 		// Get the results for the message received
-		results := messageReceivedCallBack(fb.stateManager, fmt.Sprintf("%v", m.Sender.ID), m.Text)
+		results := messageReceivedCallBack(fb.stateManager, fb.subscriptionManager, fmt.Sprintf("%v", m.Sender.ID), m.Text)
 
 		// Send them to the user
 		for _, str := range results {

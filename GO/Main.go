@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"encoding/json"
-	"github.com/paked/messenger"
 	"net/url"
 	"net/http"
 	"wit"
@@ -11,7 +10,10 @@ import (
 	"io/ioutil"
 	"state"
 	"chat"
-	"strconv"
+	"subscription"
+	"time"
+	"log"
+	"sync"
 )
 
 
@@ -23,42 +25,71 @@ var resolverMap = map[string]func(string,  map[string][]wit.WitEntity) solvers.I
 
 func main() {
 	// Create the state object
-	st := state.StateManagerBuilder()
+	stateManager := state.StateManagerBuilder()
+
+	// Create the subscription manager object
+	subscriptionManager := subscription.SubscriptionManagerBuilder()
+
+	// Create the chat manager
+	chatManager := chat.FacebookMessengerBuilder(&stateManager, &subscriptionManager)
+
+	// Start the go routines
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	// Start Subscription listening
+	go startSubscriptionListening(&subscriptionManager, chatManager)
 
 	// Start Facebook Messenger Server
-	startFacebookMessengerServer(&st)
+	go startFacebookMessengerServer(&stateManager, chatManager)
+
+	wg.Wait()
 
 	// Mock messages
-	messageMock := messenger.Message{}
-	messageMock.Sender.ID = 123456
-
-
-	// CASE 1 -> SPECIFING THE RIGHT COURIER FIRM
-	messageMock.Text = "2627190725"
-	fmt.Println( messageHandleToRes(&st, strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text) )
+	//messageMock := messenger.Message{}
+	//messageMock.Sender.ID = 123456
+	//
+	//// CASE 1 -> SPECIFING THE RIGHT COURIER FIRM
+	//messageMock.Text = "2627190725"
+	//fmt.Println( messageHandleToRes(&stateManager, &subscriptionManager, strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text) )
 	//
 	//messageMock.Text = "DHL"
-	//fmt.Println( messageHandleToRes(&st, messageMock) )
-
-
+	//fmt.Println( messageHandleToRes(&stateManager, messageMock) )
+	//
+	//
 	// CASE 2 -> ALRIGHT AWB
 	//messageMock.Text = "Hi, what's the status for 2032810250356"
-	//fmt.Println( messageHandleToRes(&st, messageMock) )
-
+	//fmt.Println( messageHandleToRes(&stateManager, messageMock) )
+	//
 	// CASE 3 -> ALRIGHT AWB -> Request all history for that awb
 	//messageMock.Text = "Hi, what's the status for 2032810250356"
-	//fmt.Println( messageHandleToRes(&st, messageMock) )
+	//fmt.Println( messageHandleToRes(&stateManager, messageMock) )
 	//
 	//messageMock.Text = "Please show me all the statistics"
-	//fmt.Println( messageHandleToRes(&st, messageMock) )
+	//fmt.Println( messageHandleToRes(&stateManager, messageMock) )
 }
 
-func startFacebookMessengerServer(stateManager *state.StateManager) {
-	fbm := chat.FacebookMessengerBuilder(stateManager)
-	fbm.HandleMessages(messageHandleToRes)
+func startFacebookMessengerServer(stateManager *state.StateManager, chatManager chat.IChat) {
+	chatManager.HandleMessages(messageHandleToRes)
 }
 
-func messageHandleToRes(stateManager *state.StateManager, senderId string, message string) []string {
+func startSubscriptionListening(subscriptionManager *subscription.SubscriptionManager, chat chat.IChat) {
+	for range time.Tick(time.Duration(time.Minute)) {
+		changes, err := subscriptionManager.CheckForChanges()
+
+		if err != nil {
+			log.Fatal("Error in startSubscriptionListening")
+		}
+		// Send the messages
+		for key, value := range changes {
+			if len(value) != 0 {
+				chat.SendMessage(key, value)
+			}
+		}
+	}
+}
+
+func messageHandleToRes(stateManager *state.StateManager, subscriptionManager *subscription.SubscriptionManager, senderId string, message string) []string {
 	// Get the message text & form WIT request
 	var urlToSend string
 	urlToSend = "https://api.wit.ai/message?v=20180617&q=" + url.QueryEscape(message)
@@ -74,7 +105,7 @@ func messageHandleToRes(stateManager *state.StateManager, senderId string, messa
 
 		// Transform byte array into an response
 		var sentToUSer []string
-		sentToUSer = witToRes(stateManager, fmt.Sprintf("%v", senderId), bodyBytes)
+		sentToUSer = witToRes(stateManager, subscriptionManager, fmt.Sprintf("%v", senderId), bodyBytes)
 
 		// Return the result ( a list of strings )
 		return sentToUSer
@@ -86,7 +117,7 @@ func messageHandleToRes(stateManager *state.StateManager, senderId string, messa
 }
 
 // Here must implement the flow
-func witToRes(stateManager *state.StateManager, userId string, bodyBytes []byte) []string {
+func witToRes(stateManager *state.StateManager, subscriptionManager *subscription.SubscriptionManager, userId string, bodyBytes []byte) []string {
 	// Transform byte array into an response
 	rw := transformWitResponse(bodyBytes)
 
@@ -123,12 +154,12 @@ func witToRes(stateManager *state.StateManager, userId string, bodyBytes []byte)
 						res, _ := stateOfUser.Solver.GetStatuses()
 						return res
 					case wit.MESSAGE_REQUEST_SUBSCRIPTION:
-						// TO DO
-						return nil
+						statuses, _ := stateOfUser.Solver.GetStatuses()
+						subscriptionManager.AddSubscription(userId, subscription.SubscriptionManagerEntity{stateOfUser.Solver, len(statuses), userId})
 					case wit.MESSAGE_REQUEST_NEW_AWB:
 						// Remove the state of the old awb && recall the function
 						stateManager.RemoveState(userId)
-						return witToRes(stateManager, userId, bodyBytes)
+						return witToRes(stateManager, subscriptionManager, userId, bodyBytes)
 				}
 		}
 	} else { // User has no state associated -> check the message for an awb

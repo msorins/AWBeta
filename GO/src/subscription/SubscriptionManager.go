@@ -4,15 +4,23 @@ import (
 	"solvers"
 	"errors"
 	"fmt"
+	"time"
 )
 
 type SubscriptionManagerEntity struct {
-	Solver solvers.ISolver
-	lastNumberOfEntities int
+	Solver               solvers.ISolver
+	LastNumberOfEntities int
+	ByUserId             string
 }
 
 type SubscriptionManager struct {
 	subscriptions map[string] SubscriptionManagerEntity
+}
+
+func SubscriptionManagerBuilder() SubscriptionManager {
+	sm := SubscriptionManager{map[string] SubscriptionManagerEntity{}}
+
+	return sm
 }
 
 func (manager *SubscriptionManager) GetSubscription(id string) (SubscriptionManagerEntity, error) {
@@ -58,21 +66,28 @@ func (manager *SubscriptionManager) IdExists(id string) bool {
 	return found
 }
 
-func (manager *SubscriptionManager) CheckForChanges() error {
+func (manager *SubscriptionManager) CheckForChanges() (map[string] []string, error) {
+	fmt.Println("Starting to check for subscriptions - " + time.Now().String())
+	sendingmsgs := map[string] []string{}
+
 	for _, subscription := range manager.subscriptions {
 		// Must check for update
-		oldNrOfStatuses := subscription.lastNumberOfEntities
+		oldNrOfStatuses := subscription.LastNumberOfEntities
 		statuses, responseCode := subscription.Solver.GetStatuses()
 
-		// Means the the status has updated => send user the update
 		diff := len(statuses) - oldNrOfStatuses
+		// Means the the status has updated => send user the update
  		if responseCode == solvers.SOLVER_OK && diff > 1{
-			// TO DO -> send user the new statuses
+			msgs := []string{"A new update for awb " + subscription.Solver.GetAwb()}
+			for _, status := range statuses[ len(statuses) - diff :] {
+				msgs = append(msgs, status)
+			}
+			sendingmsgs[subscription.ByUserId] = msgs
 
-			//
-			subscription.lastNumberOfEntities = len(statuses)
+			// Update the last number of entities
+			subscription.LastNumberOfEntities = len(statuses)
 		}
 	}
 
-	return nil
+	return sendingmsgs, nil
 }
