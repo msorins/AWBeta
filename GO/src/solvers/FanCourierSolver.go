@@ -10,6 +10,7 @@ import (
 	"strconv"
 	"sort"
 	"wit"
+	"time"
 )
 
 type awbFanCourierSolver struct {
@@ -17,12 +18,12 @@ type awbFanCourierSolver struct {
 	url                string
 	Statuses           []AWbFanCourierCheckpoint
 	LastSolverResponse SolverResponse
+	lastUpdateCheck	time.Time
 }
 
 type AWbFanCourierResponse struct {
 	Entities map[string] AWbFanCourierCheckpoint `json:"1"`
 }
-
 
 type AWbFanCourierCheckpoint struct {
 		Index int `json:"nstex"`
@@ -38,6 +39,11 @@ func AwbFanCourierSolverBuilder(awb string, entities map[string][]wit.WitEntity)
 }
 
 func (solver *awbFanCourierSolver) updateStatuses() SolverResponse {
+	// Check to see if the request is already cached
+	if time.Since(solver.lastUpdateCheck).Minutes() < TIME_BETWEEN_REQUEST_MIN {
+		return SOLVER_CACHED
+	}
+
 	var urlToSend string
 	urlToSend = solver.url
 
@@ -84,6 +90,7 @@ func (solver *awbFanCourierSolver) updateStatuses() SolverResponse {
 		return SOLVER_BAD_REQUEST
 	}
 
+	solver.lastUpdateCheck = time.Now()
 	solver.LastSolverResponse = SOLVER_OK
 	return SOLVER_OK
 }

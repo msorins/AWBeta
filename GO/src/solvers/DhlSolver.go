@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"sort"
 	"wit"
+	"time"
 )
 
 type awbDhlSolver struct {
@@ -15,6 +16,7 @@ type awbDhlSolver struct {
 	url                string
 	Statuses           []AwbDhlCheckpoint
 	LastSolverResponse SolverResponse
+	lastUpdateCheck	time.Time
 }
 
 type AWbDhlResponse struct {
@@ -40,6 +42,11 @@ func AwbDhlSolverBuilder(awb string, entities map[string][]wit.WitEntity) ISolve
 }
 
 func (solver *awbDhlSolver) updateStatuses() SolverResponse {
+	// Check to see if the request is already cached
+	if time.Since(solver.lastUpdateCheck).Minutes() < TIME_BETWEEN_REQUEST_MIN {
+		return SOLVER_CACHED
+	}
+
 	var urlToSend string
 	urlToSend = solver.url + url.QueryEscape(solver.awb)
 
@@ -69,6 +76,7 @@ func (solver *awbDhlSolver) updateStatuses() SolverResponse {
 		return SOLVER_BAD_REQUEST
 	}
 
+	solver.lastUpdateCheck = time.Now()
 	solver.LastSolverResponse = SOLVER_OK
 	return SOLVER_OK
 }
