@@ -2,23 +2,33 @@ package main
 
 import (
 	"program"
+	"github.com/paked/messenger"
+	"strconv"
+	"fmt"
 )
 
 
 func main() {
-	// Start everything
+	// Instantiate the program
 	programManager := program.ProgramManagerBuilder()
+
+	// Send some mock message
+	messageMock := messenger.Message{}
+	messageMock.Sender.ID = 123456
+
+	// CASE 1 -> SPECIFING THE RIGHT COURIER FIRM
+	messageMock.Text = "Hi, what's the status for 2032810250356"
+	fmt.Println( programManager.MessageHandle(strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text) )
+
+	messageMock.Text = "Please tell me all its history"
+	fmt.Println( programManager.MessageHandle(strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text) )
+
+	// Start the production code listeners
 	programManager.StartProd()
+}
 
-
-	// Mock messages
-	//messageMock := messenger.Message{}
-	//messageMock.Sender.ID = 123456
-	//
-	//// CASE 1 -> SPECIFING THE RIGHT COURIER FIRM
-	//messageMock.Text = "2627190725"
-	//fmt.Println( messageHandleToRes(&stateManager, &subscriptionManager, strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text) )
-	//
+/*
+//
 	//messageMock.Text = "DHL"
 	//fmt.Println( messageHandleToRes(&stateManager, messageMock) )
 	//
@@ -33,5 +43,6 @@ func main() {
 	//
 	//messageMock.Text = "Please show me all the statistics"
 	//fmt.Println( messageHandleToRes(&stateManager, messageMock) )
-}
+
+ */
 

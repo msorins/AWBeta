@@ -39,7 +39,7 @@ func ProgramManagerBuilder() ProgramManager{
 	programManager.subscriptionManager = subscription.SubscriptionManagerBuilder()
 
 	// Create the chat manager
-	programManager.chatManager = chat.FacebookMessengerBuilder(&programManager.stateManager, &programManager.subscriptionManager)
+	programManager.chatManager = chat.FacebookMessengerBuilder()
 
 	return programManager
 }
@@ -61,7 +61,7 @@ func (programManager *ProgramManager) StartProd() {
 
 
 func (programManager *ProgramManager) startFacebookMessengerServer(stateManager *state.StateManager, chatManager chat.IChat) {
-	chatManager.HandleMessages(programManager.messageHandle)
+	chatManager.HandleMessages(programManager.MessageHandle)
 }
 
 func (programManager *ProgramManager) startSubscriptionListening(subscriptionManager *subscription.SubscriptionManager, chat chat.IChat) {
@@ -82,7 +82,7 @@ func (programManager *ProgramManager) startSubscriptionListening(subscriptionMan
 
 
 // To change here the parameters
-func (programManager *ProgramManager) messageHandle(stateManager *state.StateManager, subscriptionManager *subscription.SubscriptionManager, senderId string, message string) []string {
+func (programManager *ProgramManager) MessageHandle( senderId string, message string) []string {
 	// Get the message text & form WIT request
 	var urlToSend string
 	urlToSend = "https://api.wit.ai/message?v=20180617&q=" + url.QueryEscape(message)
@@ -98,7 +98,7 @@ func (programManager *ProgramManager) messageHandle(stateManager *state.StateMan
 
 		// Transform byte array into an response
 		var sentToUSer []string
-		sentToUSer = programManager.processMessageByState(stateManager, subscriptionManager, fmt.Sprintf("%v", senderId), bodyBytes)
+		sentToUSer = programManager.processMessageByState(fmt.Sprintf("%v", senderId), bodyBytes)
 
 		// Return the result ( a list of strings )
 		return sentToUSer
@@ -110,13 +110,13 @@ func (programManager *ProgramManager) messageHandle(stateManager *state.StateMan
 }
 
 // Here must implement the flow
-func (programManager *ProgramManager) processMessageByState(stateManager *state.StateManager, subscriptionManager *subscription.SubscriptionManager, userId string, bodyBytes []byte) []string {
+func (programManager *ProgramManager) processMessageByState(userId string, bodyBytes []byte) []string {
 	// Transform byte array into an response
 	rw := programManager.transformWitResponse(bodyBytes)
 
 	// If the user has already a state associated with him / her => deal with it accordingly
-	if stateManager.IdExists(userId) {
-		stateOfUser, _ := stateManager.GetState(userId)
+	if programManager.stateManager.IdExists(userId) {
+		stateOfUser, _ := programManager.stateManager.GetState(userId)
 
 		switch stateOfUser.State {
 		case state.USER_STATE_AWB_CONFUSING:
@@ -126,12 +126,12 @@ func (programManager *ProgramManager) processMessageByState(stateManager *state.
 			switch responseCode {
 			// Operation completed successfully -> delete the state
 			case solvers.SOLVER_OK:
-				stateManager.SetState(userId, handler, state.USER_STATE_AWB_OK)
+				programManager.stateManager.SetState(userId, handler, state.USER_STATE_AWB_OK)
 
 				// Provided awb was incorect -> ask him to specify the name of the awb
 			case solvers.SOLVER_AWB_INCORRECT:
 				res = append(res, "Please try again with other awb :)")
-				stateManager.RemoveState(userId)
+				programManager.stateManager.RemoveState(userId)
 			}
 
 			return res;
@@ -148,11 +148,11 @@ func (programManager *ProgramManager) processMessageByState(stateManager *state.
 				return res
 			case wit.MESSAGE_REQUEST_SUBSCRIPTION:
 				statuses, _ := stateOfUser.Solver.GetStatuses()
-				subscriptionManager.AddSubscription(userId, subscription.SubscriptionManagerEntity{stateOfUser.Solver, len(statuses), userId})
+				programManager.subscriptionManager.AddSubscription(userId, subscription.SubscriptionManagerEntity{stateOfUser.Solver, len(statuses), userId})
 			case wit.MESSAGE_REQUEST_NEW_AWB:
 				// Remove the state of the old awb && recall the function
-				stateManager.RemoveState(userId)
-				return programManager.processMessageByState(stateManager, subscriptionManager, userId, bodyBytes)
+				programManager.stateManager.RemoveState(userId)
+				return programManager.processMessageByState(userId, bodyBytes)
 			}
 		}
 	} else { // User has no state associated -> check the message for an awb
@@ -164,12 +164,12 @@ func (programManager *ProgramManager) processMessageByState(stateManager *state.
 		switch responseCode {
 		// Operation completed successfully -> delete the state
 		case solvers.SOLVER_OK:
-			stateManager.SetState(userId, handler, state.USER_STATE_AWB_OK)
+			programManager.stateManager.SetState(userId, handler, state.USER_STATE_AWB_OK)
 
 			// Provided awb was incorect -> ask him to specify the name of the awb
 		case solvers.SOLVER_AWB_INCORRECT:
 			res = append(res, "Could you please specify a courier name?")
-			stateManager.SetState(userId, handler, state.USER_STATE_AWB_CONFUSING)
+			programManager.stateManager.SetState(userId, handler, state.USER_STATE_AWB_CONFUSING)
 		}
 
 		return res
