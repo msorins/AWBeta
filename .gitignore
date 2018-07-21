@@ -78,3 +78,9 @@ GO/src/github\.com/stretchr/
 GO/src/github\.com/paked/
 
 GO/\.idea/workspace\.xml
+
+GO/src/golang\.org/x/
+
+GO/src/github\.com/PuerkitoBio/goquery/
+
+*.cli

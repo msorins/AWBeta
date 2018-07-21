@@ -9,29 +9,28 @@ import (
 	"strings"
 	"strconv"
 	"sort"
-	"wit"
 	"time"
 )
 
 type awbFanCourierSolver struct {
 	awb                string
 	url                string
-	Statuses           []AWbFanCourierCheckpoint
+	Statuses           []AwbFanCourierCheckpoint
 	LastSolverResponse SolverResponse
 	lastUpdateCheck	time.Time
 }
 
 type AWbFanCourierResponse struct {
-	Entities map[string] AWbFanCourierCheckpoint `json:"1"`
+	Entities map[string]AwbFanCourierCheckpoint `json:"1"`
 }
 
-type AWbFanCourierCheckpoint struct {
+type AwbFanCourierCheckpoint struct {
 		Index int `json:"nstex"`
 		Status string `json:"mstex"`
 		Date string `json:"dstex"`
 }
 
-func AwbFanCourierSolverBuilder(awb string, entities map[string][]wit.WitEntity) ISolver{
+func AwbFanCourierSolverBuilder(awb string) ISolver{
 	awbSolver := awbFanCourierSolver{}
 	awbSolver.url = "https://www.fancourier.ro/wp-content/themes/fancourier/webservice.php"
 	awbSolver.awb = awb
@@ -70,7 +69,7 @@ func (solver *awbFanCourierSolver) updateStatuses() SolverResponse {
 		}
 
 		// Assign it to class member
-		lst := []AWbFanCourierCheckpoint{}
+		lst := []AwbFanCourierCheckpoint{}
 
 		for _, value := range  rs.Entities {
 			if value.Index != 0 {

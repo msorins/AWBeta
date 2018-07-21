@@ -3,10 +3,9 @@ package main
 import (
 	"program"
 	"github.com/paked/messenger"
-	"strconv"
 	"fmt"
+	"strconv"
 )
-
 
 func main() {
 	// Instantiate the program

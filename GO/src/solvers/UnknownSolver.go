@@ -1,18 +1,14 @@
 package solvers
 
-import (
-	"wit"
-)
-
 type unknownCourierSolver struct {
 	awb                string
 	url                string
-	Statuses           []AWbFanCourierCheckpoint
+	Statuses           []AwbFanCourierCheckpoint
 	LastSolverResponse SolverResponse
 }
 
 
-func UnknownFanCourierSolverBuilder(awb string, entities map[string][]wit.WitEntity) ISolver{
+func UnknownFanCourierSolverBuilder(awb string) ISolver{
 	awbSolver := unknownCourierSolver{}
 	awbSolver.awb = awb
 	return &awbSolver
