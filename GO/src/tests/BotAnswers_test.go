@@ -96,6 +96,49 @@ func TestDHLPastStatuses(t *testing.T) {
 	}
 }
 
+func TestSameDayLastStatus(t *testing.T) {
+	// Instantiate the program
+	programManager := program.ProgramManagerBuilder()
+
+	// Send message for Same Day
+	messageMock := messenger.Message{}
+	messageMock.Sender.ID = 123456
+	texts := []string {"Hi, what's the status for SD2898674", "Could you please tell my where my collet is: SD2898674 ?", "Where is SD2898674 ?? Does it take much longer"}
+
+	for _, text := range texts {
+		messageMock.Text = text
+		res := programManager.MessageHandle(strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text)
+
+		// Check to see if response is correct
+		if len(res) != 2  || res[0] != "SameDay: Successfully found the latest status of your SameDay package" || res[1] != " Coletul tau a fost livrat. in  Cluj at 30.03.2017 21:04:00" {
+			t.Error("TestSameDayLastStatus wrong")
+		}
+	}
+}
+
+func TestSameDayPastStatuses(t *testing.T) {
+	// Instantiate the program
+	programManager := program.ProgramManagerBuilder()
+
+	// Send message for Fan Courier
+	messageMock := messenger.Message{}
+	messageMock.Sender.ID = 123456
+
+	messageMock.Text = "Hi, what's the status for SD2898674"
+	programManager.MessageHandle(strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text)
+
+	texts := []string {"Could you please tell all my past statuses?", "I want the full history, please"}
+	for _, text := range texts {
+		messageMock.Text = text
+		res := programManager.MessageHandle(strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text)
+
+		// Check to see if response is correct
+		if len(res) != 7 {
+			t.Error("TestSameDayLastStatus wrong")
+		}
+	}
+}
+
 func TestWrongAwb(t *testing.T) {
 	// Instantiate the program
 	programManager := program.ProgramManagerBuilder()

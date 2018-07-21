@@ -26,6 +26,7 @@ type ProgramManager struct {
 var resolverMap = map[string]func(string) solvers.ISolver {
 	"dhl" : solvers.AwbDhlSolverBuilder,
 	"fanCourier": solvers.AwbFanCourierSolverBuilder,
+	"sameDay": solvers.SameDaySolverBuilder,
 	"unknown": solvers.UnknownFanCourierSolverBuilder,
 }
 

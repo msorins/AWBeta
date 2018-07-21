@@ -3,7 +3,7 @@ package solvers
 type unknownCourierSolver struct {
 	awb                string
 	url                string
-	Statuses           []AWbFanCourierCheckpoint
+	Statuses           []AwbFanCourierCheckpoint
 	LastSolverResponse SolverResponse
 }
 
