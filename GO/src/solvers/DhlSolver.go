@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"encoding/json"
 	"sort"
-	"wit"
 	"time"
 )
 
@@ -34,7 +33,7 @@ type AwbDhlCheckpoint struct {
 	Location string `json:"location"`
 }
 
-func AwbDhlSolverBuilder(awb string, entities map[string][]wit.WitEntity) ISolver{
+func AwbDhlSolverBuilder(awb string) ISolver{
 	awbSolver := awbDhlSolver{}
 	awbSolver.url = "https://www.dhl.ro/shipmentTracking?AWB="
 	awbSolver.awb = awb

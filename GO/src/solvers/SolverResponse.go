@@ -7,4 +7,5 @@ const (
 	SOLVER_AWB_INCORRECT SolverResponse = iota // == 1
 	SOLVER_BAD_REQUEST   SolverResponse = iota // == 2
 	SOLVER_CACHED		 SolverResponse = iota // == 3
+	SOLVER_NOT_IMPLEMENTED   SolverResponse = iota // == 4
 )

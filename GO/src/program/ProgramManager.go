@@ -23,7 +23,7 @@ type ProgramManager struct {
 }
 
 // To do: change this
-var resolverMap = map[string]func(string,  map[string][]wit.WitEntity) solvers.ISolver {
+var resolverMap = map[string]func(string) solvers.ISolver {
 	"dhl" : solvers.AwbDhlSolverBuilder,
 	"fanCourier": solvers.AwbFanCourierSolverBuilder,
 	"unknown": solvers.UnknownFanCourierSolverBuilder,
@@ -205,7 +205,7 @@ func (programManager *ProgramManager) getHandlerFromAwb(data wit.WitResponseStru
 	}
 
 	// Call the resolver for the given awb & courier firm
-	return resolverMap[bestEntityCourierName](bestEntity.Value, data.Entities)
+	return resolverMap[bestEntityCourierName](bestEntity.Value)
 }
 
 func (programManager *ProgramManager) getHandlerFromName(stateOfRequester state.StateManagerStruct, data wit.WitResponseStructMap) solvers.ISolver {
@@ -218,7 +218,7 @@ func (programManager *ProgramManager) getHandlerFromName(stateOfRequester state.
 	}
 
 	// Call the resolver for the given awb & courier firm
-	return resolverMap[bestEntityCourierName](stateOfRequester.Solver.GetAwb(), data.Entities)
+	return resolverMap[bestEntityCourierName](stateOfRequester.Solver.GetAwb())
 }
 
 func (programManager *ProgramManager) getMessageIntent(data wit.WitResponseStructMap) wit.MessageIntent {
