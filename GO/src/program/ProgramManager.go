@@ -27,6 +27,7 @@ var resolverMap = map[string]func(string) solvers.ISolver {
 	"dhl" : solvers.AwbDhlSolverBuilder,
 	"fanCourier": solvers.AwbFanCourierSolverBuilder,
 	"sameDay": solvers.SameDaySolverBuilder,
+	"urgentCargus": solvers.UrgentCargusBuilder,
 	"unknown": solvers.UnknownFanCourierSolverBuilder,
 }
 

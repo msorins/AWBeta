@@ -103,8 +103,6 @@ func (solver *awbSameDaySolver) updateStatuses() SolverResponse {
 	solver.lastUpdateCheck = time.Now()
 	solver.LastSolverResponse = SOLVER_OK
 	return SOLVER_OK
-
-	return SOLVER_NOT_IMPLEMENTED
 }
 
 func (solver *awbSameDaySolver) GetStatuses() ([]string, SolverResponse) {
