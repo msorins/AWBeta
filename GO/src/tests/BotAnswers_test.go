@@ -182,6 +182,50 @@ func TestUrgentCargusPastStatuses(t *testing.T) {
 	}
 }
 
+func TestDpdLastStatus(t *testing.T) {
+	// Instantiate the program
+	programManager := program.ProgramManagerBuilder()
+
+	// Send message for Same Day
+	messageMock := messenger.Message{}
+	messageMock.Sender.ID = 123456
+	texts := []string {"Hi, what's the status for 80027898052", "Could you please tell my where my collet is: 80027898052 ?", "Where is 80027898052 ?? Does it take much longer"}
+
+	for _, text := range texts {
+		messageMock.Text = text
+		res := programManager.MessageHandle(strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text)
+
+		// Check to see if response is correct
+		if len(res) != 2  || res[0] != "Dpd: Successfully found the latest status of your Dpd package" || strings.Contains(res[1], "Livrat") == false {
+			t.Error("TestSameDayLastStatus wrong")
+		}
+	}
+}
+
+func TestDpdPastStatuses(t *testing.T) {
+	// Instantiate the program
+	programManager := program.ProgramManagerBuilder()
+
+	// Send message for Fan Courier
+	messageMock := messenger.Message{}
+	messageMock.Sender.ID = 123456
+
+	messageMock.Text = "Hi, what's the status for 80027898052"
+	programManager.MessageHandle(strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text)
+
+	texts := []string {"Could you please tell all my past statuses?", "I want the full history, please"}
+	for _, text := range texts {
+		messageMock.Text = text
+		res := programManager.MessageHandle(strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text)
+
+		t.Log(len(res))
+		// Check to see if response is correct
+		if len(res) != 8 {
+			t.Error("DpdLastStatus wrong")
+		}
+	}
+}
+
 func TestWrongAwb(t *testing.T) {
 	// Instantiate the program
 	programManager := program.ProgramManagerBuilder()

@@ -119,7 +119,7 @@ func (solver *awbUrgentCargusSolver) GetStatuses() ([]string, SolverResponse) {
 	results := []string{}
 
 	if len(updatedStatuses) >= 1 {
-		results = append(results, "UrgentCargus: These are all the steps taken by your SameDay package")
+		results = append(results, "UrgentCargus: These are all the steps taken by your UrgentCargus package")
 		for _, status := range updatedStatuses {
 			results = append(results, fmt.Sprintf("%s in %s at %s %s", status.Status, status.Location, status.Date, status.Time))
 		}
