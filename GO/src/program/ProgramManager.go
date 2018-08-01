@@ -151,7 +151,7 @@ func (programManager *ProgramManager) processMessageByState(userId string, bodyB
 				return res
 			case wit.MESSAGE_REQUEST_SUBSCRIPTION:
 				statuses, _ := stateOfUser.Solver.GetStatuses()
-				programManager.subscriptionManager.AddSubscription(userId, subscription.SubscriptionManagerEntity{stateOfUser.Solver, len(statuses), userId})
+				programManager.subscriptionManager.AddSubscription(stateOfUser.Solver.GetAwb(), subscription.SubscriptionManagerEntity{stateOfUser.Solver, len(statuses), userId})
 			case wit.MESSAGE_REQUEST_NEW_AWB:
 				// Remove the state of the old awb && recall the function
 				programManager.stateManager.RemoveState(userId)

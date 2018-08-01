@@ -14,7 +14,7 @@ type SubscriptionManagerEntity struct {
 }
 
 type SubscriptionManager struct {
-	subscriptions map[string] SubscriptionManagerEntity
+	subscriptions map[string] SubscriptionManagerEntity // awb -> subscriptionEntity
 }
 
 func SubscriptionManagerBuilder() SubscriptionManager {
@@ -23,45 +23,45 @@ func SubscriptionManagerBuilder() SubscriptionManager {
 	return sm
 }
 
-func (manager *SubscriptionManager) GetSubscription(id string) (SubscriptionManagerEntity, error) {
-	_, found := manager.subscriptions[id]
+func (manager *SubscriptionManager) GetSubscription(awb string) (SubscriptionManagerEntity, error) {
+	_, found := manager.subscriptions[awb]
 	if found == false {
-		return SubscriptionManagerEntity{}, errors.New(fmt.Sprintf("Id %s not found in the SubscriptionManager", id))
+		return SubscriptionManagerEntity{}, errors.New(fmt.Sprintf("Awb %s not found in the SubscriptionManager", awb))
 	}
 
-	return manager.subscriptions[id], nil
+	return manager.subscriptions[awb], nil
 }
 
-func (manager *SubscriptionManager) AddSubscription(id string, subscription SubscriptionManagerEntity) error {
-	manager.subscriptions[id] = subscription
+func (manager *SubscriptionManager) AddSubscription(awb string, subscription SubscriptionManagerEntity) error {
+	manager.subscriptions[awb] = subscription
 
 	return nil
 }
 
-func (manager *SubscriptionManager) RemoveSubscription(id string) error {
-	_, found := manager.subscriptions[id]
+func (manager *SubscriptionManager) RemoveSubscription(awb string) error {
+	_, found := manager.subscriptions[awb]
 	if found == false {
-		return errors.New(fmt.Sprintf("Id %s not found in the SubscriptionManager", id))
+		return errors.New(fmt.Sprintf("Awb %s not found in the SubscriptionManager", awb))
 	}
 
-	delete(manager.subscriptions, id)
+	delete(manager.subscriptions, awb)
 
 	return nil
 }
 
-func (manager *SubscriptionManager) updateSubscription(id string, newSubscription SubscriptionManagerEntity) error {
-	_, found := manager.subscriptions[id]
+func (manager *SubscriptionManager) updateSubscription(awb string, newSubscription SubscriptionManagerEntity) error {
+	_, found := manager.subscriptions[awb]
 	if found == false {
-		return errors.New(fmt.Sprintf("Id %s not found in the SubscriptionManager", id))
+		return errors.New(fmt.Sprintf("Awb %s not found in the SubscriptionManager", awb))
 	}
 
-	manager.subscriptions[id] = newSubscription
+	manager.subscriptions[awb] = newSubscription
 
 	return nil
 }
 
-func (manager *SubscriptionManager) IdExists(id string) bool {
-	_, found := manager.subscriptions[id]
+func (manager *SubscriptionManager) IdExists(awb string) bool {
+	_, found := manager.subscriptions[awb]
 
 	return found
 }
