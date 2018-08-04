@@ -49,13 +49,47 @@ func (fb *facebookMessenger) HandleMessages(messageReceivedCallBack func(string,
 
 		// Send them to the user
 		for _, str := range results {
+			if str == "<sendExtraAwbOptions>" {
+				p, _ := fb.client.ProfileByID(m.Sender.ID)
+				sendExtraAwbOptions(p, r)
+				continue
+			}
 			r.Text(str, messenger.ResponseType)
 		}
+	})
+	
+	fb.client.HandleAccountLinking(func(linking messenger.AccountLinking, response *messenger.Response) {
+		response.Text("Hello, ce mai faaaci", messenger.ResponseType)
+
+	})
+
+	fb.client.HandlePostBack(func(back messenger.PostBack, response *messenger.Response) {
+		response.Text("Hello you idiot", messenger.ResponseType)
 	})
 
 	addr := fmt.Sprintf("%s:%d", *host, *port)
 	log.Println("Serving messenger bot on", addr)
 	log.Fatal(http.ListenAndServe(addr, fb.client.Handler()))
+}
+
+func sendExtraAwbOptions(p messenger.Profile, r *messenger.Response) error {
+	text := fmt.Sprintf(
+		"%s, want to know even more about your package?",
+		p.FirstName,
+	)
+
+	replies := []messenger.QuickReply{
+		{
+			ContentType: "text",
+			Title:       "Past statuses",
+		},
+		{
+			ContentType: "text",
+			Title:       "Subscribe to changes",
+		},
+	}
+
+	return r.TextWithReplies(text, replies, messenger.ResponseType)
 }
 
 func (fb *facebookMessenger) SendMessage(userId string, msgs []string) {

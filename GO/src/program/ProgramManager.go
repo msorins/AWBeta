@@ -145,13 +145,14 @@ func (programManager *ProgramManager) processMessageByState(userId string, bodyB
 			switch messageIntent {
 			case wit.MESSAGE_NO_INTENT:
 				res, _ := stateOfUser.Solver.GetLastStatus()
-				return res
+				return append(res, "<sendExtraAwbOptions>")
 			case wit.MESSAGE_REQUEST_ALL_HISTORY:
 				res, _ := stateOfUser.Solver.GetStatuses()
 				return res
 			case wit.MESSAGE_REQUEST_SUBSCRIPTION:
 				statuses, _ := stateOfUser.Solver.GetStatuses()
 				programManager.subscriptionManager.AddSubscription(stateOfUser.Solver.GetAwb(), subscription.SubscriptionManagerEntity{stateOfUser.Solver, len(statuses), userId})
+				return []string{"You will be notified of any changes coming from this awb"}
 			case wit.MESSAGE_REQUEST_NEW_AWB:
 				// Remove the state of the old awb && recall the function
 				programManager.stateManager.RemoveState(userId)
@@ -168,6 +169,7 @@ func (programManager *ProgramManager) processMessageByState(userId string, bodyB
 		// Operation completed successfully -> delete the state
 		case solvers.SOLVER_OK:
 			programManager.stateManager.SetState(userId, handler, state.USER_STATE_AWB_OK)
+			res = append(res, "<sendExtraAwbOptions>")
 
 			// Provided awb was incorect -> ask him to specify the name of the awb
 		case solvers.SOLVER_AWB_INCORRECT:
@@ -221,7 +223,12 @@ func (programManager *ProgramManager) getHandlerFromName(stateOfRequester state.
 	}
 
 	// Call the resolver for the given awb & courier firm
-	return resolverMap[bestEntityCourierName](stateOfRequester.Solver.GetAwb())
+	_, ok := resolverMap[bestEntityCourierName]
+	if ok {
+		return resolverMap[bestEntityCourierName](stateOfRequester.Solver.GetAwb())
+	} else {
+		return resolverMap["unknown"](stateOfRequester.Solver.GetAwb())
+	}
 }
 
 func (programManager *ProgramManager) getMessageIntent(data wit.WitResponseStructMap) wit.MessageIntent {

@@ -2,9 +2,6 @@ package main
 
 import (
 	"program"
-	"github.com/paked/messenger"
-	"fmt"
-	"strconv"
 )
 
 func main() {
@@ -12,15 +9,15 @@ func main() {
 	programManager := program.ProgramManagerBuilder()
 
 	// Send some mock message
-	messageMock := messenger.Message{}
-	messageMock.Sender.ID = 123456
+	//messageMock := messenger.Message{}
+	//messageMock.Sender.ID = 123456
 
 	// CASE 1 -> SPECIFING THE RIGHT COURIER FIRM
-	messageMock.Text = "Hi, what's the status for 2032810250356"
-	fmt.Println( programManager.MessageHandle(strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text) )
+	//messageMock.Text = "Hi, what's the status for 2032810250356"
+	//fmt.Println( programManager.MessageHandle(strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text) )
 
-	messageMock.Text = "Please tell me all its history"
-	fmt.Println( programManager.MessageHandle(strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text) )
+	//messageMock.Text = "Please tell me all its history"
+	//fmt.Println( programManager.MessageHandle(strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text) )
 
 	// Start the production code listeners
 	programManager.StartProd()
