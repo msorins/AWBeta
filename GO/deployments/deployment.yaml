@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: awbeta-deployment
+  labels:
+    app: awbeta
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: awbeta
+  template:
+    metadata:
+      labels:
+        app: awbeta
+    spec:
+      containers:
+          - name: awbeta
+            image: "eu.gcr.io/awbeta-212719/awbeta-go:1.0.0"
+            ports:
+              - containerPort: 3000
+                protocol: TCP

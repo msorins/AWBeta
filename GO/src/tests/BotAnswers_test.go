@@ -1,6 +1,7 @@
 package tests
 
 import (
+	"fmt"
 	"testing"
 	"program"
 	"strconv"
@@ -90,6 +91,7 @@ func TestDHLPastStatuses(t *testing.T) {
 		res := programManager.MessageHandle(strconv.FormatInt(messageMock.Sender.ID, 10), messageMock.Text)
 
 		// Check to see if response is correct
+		fmt.Println("####", res, "####")
 		if len(res) != 19 {
 			t.Error("TestFanCourierLastStatus wrong")
 		}

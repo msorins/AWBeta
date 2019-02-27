@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: awbeta-ingress
+  annotations:
+      kubernetes.io/ingress.global-static-ip-name: "awbeta-ip"
+spec:
+  tls:
+    - secretName: awbeta-ssl
+  backend:
+    serviceName: awbeta-service
+    servicePort: 80

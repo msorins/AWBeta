@@ -17,7 +17,7 @@ type facebookMessenger struct {
 var (
 	verifyToken = flag.String("verify-token", "soarecelmaifainb@T", "The token used to verify facebook (required)")
 	verify      = flag.Bool("should-verify", false, "Whether or not the app should verify itself")
-	pageToken   = flag.String("page-token", "EAAcJw2oDsswBAPfJfJEXYC96SRHOAV37UmoPWVQ8ssaidzLdUPmYSOy1eGp7wEmJZC6MdiU10SuU5ptVE784YrsF092PmuUzPEmolR5pxYZAUaEH6PNL8hwRJKWBHjhRBDl9L6D2WyE6eJkBcY0buocNjuZAGD9n9fcopREFjiSR4qWeXFU", "The token that is used to verify the page on facebook")
+	pageToken   = flag.String("page-token", "EAAcJw2oDsswBAARloVZAVfmrIJWIuZAXHsxfaQhWJHxdMbgHJ18sjrcGvgWQONDWcPnoCsNT5dJVkXOYw75LHMHk8OwjGsuthwauk27PTEOc9kFaZBD5VvlyTQZCRJZBYCDhYj6AltdQaYzJL4bDKsCEDz3ZBsBG653HFZCwL1w4AZDZD", "The token that is used to verify the page on facebook")
 	appSecret   = flag.String("app-secret", "596b7437a204b6aaff57b4e72938afec", "The app secret from the facebook developer portal (required)")
 	host        = flag.String("host", "localhost", "The host used to serve the messenger bot")
 	port        = flag.Int("port", 3000, "The port used to serve the messenger bot")
