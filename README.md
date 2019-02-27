@@ -6,7 +6,7 @@
 ## Screens
 ![Demo Image ](https://github.com/msorins/AWBeta/blob/master/0.png?raw=true "Demo Image")
 
-![Demo Image ](https://github.com/msorins/AWBeta/blob/master/1.jpeg?raw=true "Demo Image")
+![Demo Image ](https://github.com/msorins/AWBeta/blob/master/1.jpg?raw=true "Demo Image")
 
 
 
